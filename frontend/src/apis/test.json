@@ -1,0 +1,156 @@
+[
+    {
+      "id": 1,
+      "name": "GeneDrinks",
+      "stocks": [
+        {
+          "id": 1,
+          "quantity": 39,
+          "beerId": 6,
+          "beer": {
+            "id": 6,
+            "name": "Leffe Blonde",
+            "content": 6.6,
+            "price": 2.2,
+            "breweryId": 1,
+            "brewery": null,
+            "stocks": [
+              null
+            ]
+          },
+          "wholesalerId": 1,
+          "wholesaler": null
+        },
+        {
+          "id": 2,
+          "quantity": 25,
+          "beerId": 7,
+          "beer": {
+            "id": 7,
+            "name": "Dark Lager X2",
+            "content": 1.6,
+            "price": 5.5,
+            "breweryId": 3,
+            "brewery": null,
+            "stocks": [
+              null
+            ]
+          },
+          "wholesalerId": 1,
+          "wholesaler": null
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Ragnarok",
+      "stocks": [
+        {
+          "id": 8,
+          "quantity": 100,
+          "beerId": 4,
+          "beer": {
+            "id": 4,
+            "name": "A2",
+            "content": 7.2,
+            "price": 1.9,
+            "breweryId": 2,
+            "brewery": null,
+            "stocks": [
+              null,
+              {
+                "id": 4,
+                "quantity": 80,
+                "beerId": 4,
+                "beer": null,
+                "wholesalerId": 3,
+                "wholesaler": {
+                  "id": 3,
+                  "name": "Johnson",
+                  "stocks": [
+                    {
+                      "id": 3,
+                      "quantity": 50,
+                      "beerId": 2,
+                      "beer": {
+                        "id": 2,
+                        "name": "American India Pale Ale",
+                        "content": 3,
+                        "price": 5.9,
+                        "breweryId": 1,
+                        "brewery": null,
+                        "stocks": [
+                          null
+                        ]
+                      },
+                      "wholesalerId": 3,
+                      "wholesaler": null
+                    },
+                    null
+                  ]
+                }
+              }
+            ]
+          },
+          "wholesalerId": 2,
+          "wholesaler": null
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Johnson",
+      "stocks": [
+        {
+          "id": 3,
+          "quantity": 50,
+          "beerId": 2,
+          "beer": {
+            "id": 2,
+            "name": "American India Pale Ale",
+            "content": 3,
+            "price": 5.9,
+            "breweryId": 1,
+            "brewery": null,
+            "stocks": [
+              null
+            ]
+          },
+          "wholesalerId": 3,
+          "wholesaler": null
+        },
+        {
+          "id": 4,
+          "quantity": 80,
+          "beerId": 4,
+          "beer": {
+            "id": 4,
+            "name": "A2",
+            "content": 7.2,
+            "price": 1.9,
+            "breweryId": 2,
+            "brewery": null,
+            "stocks": [
+              {
+                "id": 8,
+                "quantity": 100,
+                "beerId": 4,
+                "beer": null,
+                "wholesalerId": 2,
+                "wholesaler": {
+                  "id": 2,
+                  "name": "Ragnarok",
+                  "stocks": [
+                    null
+                  ]
+                }
+              },
+              null
+            ]
+          },
+          "wholesalerId": 3,
+          "wholesaler": null
+        }
+      ]
+    }
+  ]

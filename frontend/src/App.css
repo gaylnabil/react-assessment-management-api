@@ -1,0 +1,11 @@
+* {
+  box-sizing: border-box;
+}
+
+.brewery-content{
+  background-color: dodgerblue;
+}
+
+.beer-content{
+  background-color: #a8e6ff;
+}
