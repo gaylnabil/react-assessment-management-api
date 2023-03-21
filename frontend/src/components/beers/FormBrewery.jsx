@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import api from '../../apis/api';
+import { postRequest } from '../../apis/api';
 import onValueChange from './../Events/ValueChangeEvent';
 
 function FormBrewery() {
@@ -28,14 +28,7 @@ function FormBrewery() {
 
         const addBeer = async () => {
             try {
-                const response = await api.post(
-                    'breweries',
-                    formData,
-                    {
-                        headers: {
-                            'Content-Type': 'application/json'
-                        }
-                    })
+                const response = await postRequest('breweries', formData)
                 console.log(response);
             } catch (error) {
                 console.log(error);

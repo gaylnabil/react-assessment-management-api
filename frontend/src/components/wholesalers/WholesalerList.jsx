@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
-import api from "../../apis/api";
+import { getWholesalersTheirStocks } from "../../apis/api";
 import Wholesaler from "./Wholesaler";
 
 function WholesalerList() {
   const [ wholesalerList, setWholesalerList ] = useState([]);
 
   const getWholesalers = async () => {
-    const response = await api.get("wholesalers/stocks/beers");
-    const data = response.data;
+    // const response = await api.get("wholesalers/stocks/beers");
+    const data = await getWholesalersTheirStocks();
 
-    console.log("getWholesalerList:", data);
+    // console.log("getWholesalerList:", data);
 
     setWholesalerList(data);
   };

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import api from '../../apis/api';
+import { postRequest, updateRequest, getDataSingle, getDataList } from '../../apis/api';
 import { useNavigate } from 'react-router-dom';
 import SelectTag from '../SelectTag';
 import onValueChange from './../Events/ValueChangeEvent';
@@ -20,8 +20,7 @@ function FormBeer(props) {
 
     useEffect(() => {
         const breweriesFindAll = async (id) => {
-            const response = await api.get(`breweries`);
-            const data = await response.data;
+            const data = await getDataList(`breweries`);
             //console.log("data: ", JSON.stringify(data));
             //console.log("data: ", response);
             setBreweries(data);
@@ -34,7 +33,7 @@ function FormBeer(props) {
         if (props.isEditing) {
 
             const getBeer = async () => {
-                const response = await api.get(`beers/${props.beerId}`);
+                const response = await getDataSingle(`beers`, props.beerId);
                 const data = await response.data;
                 console.log("data: ", JSON.stringify(data));
                 //console.log("data: ", response);
@@ -73,22 +72,10 @@ function FormBeer(props) {
                 let response = null;
 
                 if (props.isEditing) {
-                    response = await api.put(`beers/${props.beerId}`,
-                        JSON.stringify(formData),
-                        {
-                            headers: {
-                                'Content-Type': 'application/json'
-                            }
-                        })
+                    response = await updateRequest(`beers/${props.beerId}`, formData)
                 } else {
 
-                    response = await api.post('beers',
-                        JSON.stringify(formData),
-                        {
-                            headers: {
-                                'Content-Type': 'application/json'
-                            }
-                        })
+                    response = await postRequest('beers', formData)
                 }
                 console.log(response);
                 if (response.status === 201 || response.status === 204) {

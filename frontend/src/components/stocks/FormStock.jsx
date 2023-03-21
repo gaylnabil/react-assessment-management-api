@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import api from "../../apis/api";
+import { postRequest, updateRequest, getDataList, getDataSingle } from "../../apis/api";
 import SelectTag from "../SelectTag";
 import onValueChange from "../Events/ValueChangeEvent";
 
@@ -18,8 +18,7 @@ function FormStock(props) {
   useEffect(() => {
     if (props.isEditing) {
       const getStock = async () => {
-        const response = await api.get(`stocks/${props.id}`);
-        const data = await response.data;
+        const data = await getDataSingle(`stocks`, props.id);
         console.log("data: ", JSON.stringify(data));
         //console.log("data: ", response);
         setFormData((prevData) => {
@@ -30,9 +29,8 @@ function FormStock(props) {
 
       getStock();
     } else {
-      const GetList = async (name, setData) => {
-        const response = await api.get(name);
-        const data = await response.data;
+      const GetList = async (url, setData) => {
+        const data = await getDataList(url);
         //console.log("data: ", JSON.stringify(data));
         //console.log("data: ", response);
         setData(data);
@@ -53,21 +51,9 @@ function FormStock(props) {
       try {
         let response = null;
         if (props.isEditing) {
-          response = await api.put(
-            `stocks/${props.id}`,
-            JSON.stringify(formData),
-            {
-              headers: {
-                "Content-Type": "application/json",
-              },
-            }
-          );
+          response = await updateRequest(`stocks`, props.id, formData);
         } else {
-          response = await api.post(`stocks`, JSON.stringify(formData), {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          });
+          response = await postRequest(`stocks`, formData);
         }
 
         console.log(response);
