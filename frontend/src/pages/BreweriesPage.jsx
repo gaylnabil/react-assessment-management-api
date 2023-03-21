@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import api from '../apis/api';
+import { getDataList, deleteRequest } from '../apis/api';
 import Brewery from '../components/Brewery';
 import { useNavigate } from 'react-router-dom';
 // import Modal from './../components/Modal';
@@ -10,8 +10,7 @@ function BreweriesPage() {
     const navigate = useNavigate();
 
     const getBreweries = async () => {
-        const response = await api.get("breweries/beers");
-        const data = await response.data;
+        const data = await getDataList("breweries/beers");
         //console.log("data: ", JSON.stringify(data));
         //console.log("data: ", response);
         setBreweries(data);
@@ -24,7 +23,7 @@ function BreweriesPage() {
     const deleteBeer = async (beerId) => {
         try {
 
-            const response = await api.delete(`beers/${beerId}`);
+            const response = await deleteRequest(`beers/${beerId}`);
             if (response.status === 204) {
                 getBreweries();
             }

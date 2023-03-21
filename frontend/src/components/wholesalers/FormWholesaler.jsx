@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import api from '../../apis/api';
 import { useNavigate } from 'react-router-dom';
+import { postRequest, updateRequest, getDataSingle } from '../../apis/api';
 import onValueChange from './../Events/ValueChangeEvent';
 
 function FormWholesaler(props) {
@@ -14,8 +14,7 @@ function FormWholesaler(props) {
         if (props.isEditing) {
 
             const getWholesaler = async () => {
-                const response = await api.get(`wholesalers/${props.wholesalerId}`);
-                const data = await response.data;
+                const data = await getDataSingle(`wholesalers`, props.wholesalerId);
                 console.log("data: ", JSON.stringify(data));
                 //console.log("data: ", response);
                 setFormData(prevData => {
@@ -51,22 +50,9 @@ function FormWholesaler(props) {
                 let response = null;
 
                 if (props.isEditing) {
-                    response = await api.put(`wholesalers/${props.wholesalerId}`,
-                        JSON.stringify(formData),
-                        {
-                            headers: {
-                                'Content-Type': 'application/json'
-                            }
-                        })
+                    response = await updateRequest(`wholesalers`, props.wholesalerId, formData)
                 } else {
-
-                    response = await api.post('wholesalers',
-                        JSON.stringify(formData),
-                        {
-                            headers: {
-                                'Content-Type': 'application/json'
-                            }
-                        })
+                    response = await postRequest('wholesalers', formData)
                 }
                 console.log(response);
                 if (response.status === 201 || response.status === 204) {

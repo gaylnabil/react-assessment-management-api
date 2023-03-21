@@ -116,6 +116,24 @@ namespace react_assessment_management_api.Controllers
             return wholesaler;
         }
 
+        // GET: api/Wholesalers/5/Beers
+        [HttpGet("{id}/Beers")]
+        public async Task<ActionResult<IEnumerable<Beer>>> GetWholesalerWithBeers(int id)
+        {
+            if (_context.Beers == null)
+            {
+                return NotFound();
+            }
+            var beer = await _context.Beers.Where(b => b.Stocks.Any(s => s.WholesalerId == id)).ToListAsync();
+                                          
+            if (beer == null)
+            {
+                return NotFound();
+            }
+
+            return beer;
+        }
+
         // PUT: api/Wholesalers/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]

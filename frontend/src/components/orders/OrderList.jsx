@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import api from "../../apis/api";
+import { getOrdersWithWholesalersAndBeers } from "../../apis/api";
 import { useNavigate } from "react-router-dom";
 
 function OrderList() {
@@ -7,11 +7,8 @@ function OrderList() {
   const navigate = useNavigate();
 
   const getOrders = async () => {
-    const response = await api.get("orders/wholesalers/beers");
-    const data = response.data;
-
+    const data = await getOrdersWithWholesalersAndBeers();
     console.log("getOrderList:", data);
-
     setOrderList(data);
   };
 
