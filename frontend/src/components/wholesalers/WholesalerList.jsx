@@ -7,6 +7,7 @@ function WholesalerList(props) {
 
 
   useEffect(() => {
+    // Gets Wholesalers and their stocks from the wholesaler service and adds them to the query
     const getWholesalers = async () => {
       // url = "wholesalers/stocks/beers";
       const data = await props.wholesalerService.getWholesalersTheirStocks();
@@ -15,12 +16,8 @@ function WholesalerList(props) {
     getWholesalers();
   }, [ props.wholesalerService ]);
 
+  // Creates the wholesaler elements that are part of the service. This is used to create the wholesaler list
   const wholeElements = wholesalerList.map((wholesaler, index) => {
-    // console.log(
-    //   "🚀 ~ file: WholesalerList.jsx:25 ~ wholeElements ~ wholesaler:",
-    //   wholesaler
-    // );
-
     return <Wholesaler key={index} wholesaler={wholesaler} wholesalerService={props.wholesalerService} />
   });
 
