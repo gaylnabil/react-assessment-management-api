@@ -1,29 +1,31 @@
 import React, { useState, useEffect } from 'react'
-import { getDataList, deleteRequest } from '../apis/api';
 import Brewery from '../components/Brewery';
 import { useNavigate } from 'react-router-dom';
-// import Modal from './../components/Modal';
-
+import BreweryService from './../services/BreweryService';
+import BeerService from './../services/BeerService';
 function BreweriesPage() {
 
     const [ breweries, setBreweries ] = useState([]);
     const navigate = useNavigate();
 
+    const breweryService = new BreweryService();
+    const beerService = new BeerService();
+
     const getBreweries = async () => {
-        const data = await getDataList("breweries/beers");
+        const data = await breweryService.getBrewersWithBeers();
         //console.log("data: ", JSON.stringify(data));
         //console.log("data: ", response);
         setBreweries(data);
     };
     useEffect(() => {
         getBreweries();
-    }, []);
+    }, [])
 
     // Delete Beer
     const deleteBeer = async (beerId) => {
         try {
 
-            const response = await deleteRequest(`beers/${beerId}`);
+            const response = await beerService.deleteBeer(beerId);
             if (response.status === 204) {
                 getBreweries();
             }
@@ -53,24 +55,16 @@ function BreweriesPage() {
             {/* <p>{JSON.stringify(breweries, null, 2)}</p> */}
             <div className='container'>
                 <div className="row my-4">
-                    <div className="col px-2">
+                    <div className="col px-2 text-center">
                         <button
                             type="button"
-                            className="btn btn-primary form-control"
+                            className="btn btn-primary"
                             onClick={() => { navigate("/beers/new") }}
                         >
                             Add new Beer
                         </button>
                     </div>
-                    <div className="col">
-                        <button
-                            type="button"
-                            className="btn btn-success form-control"
-                            onClick={() => { navigate("/beers/new") }}
-                        >
-                            Add new Beer
-                        </button>
-                    </div>
+
                 </div>
                 <div className='brewery-titles row py-2 flex flex-center align-center bg-black text-white'>
                     <div className="col"><h6>Breweries</h6></div>

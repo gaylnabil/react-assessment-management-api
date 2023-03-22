@@ -1,9 +1,9 @@
 import React from 'react'
 import WholesalerList from '../components/wholesalers/WholesalerList'
 import { useNavigate } from 'react-router-dom'
-
+import WholesalerService from './../services/WholesalerService';
 function WholesalersPage() {
-
+    const wholesalerService = new WholesalerService();
     const navigate = useNavigate();
     return (
         <div className="container">
@@ -33,7 +33,7 @@ function WholesalersPage() {
                 </div>
 
             </div>
-            <WholesalerList />
+            <WholesalerList wholesalerService={wholesalerService} />
         </div>
     )
 }

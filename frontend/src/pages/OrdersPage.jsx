@@ -1,10 +1,12 @@
 import React from 'react'
 import OrderList from '../components/orders/OrderList'
 import { useNavigate } from 'react-router-dom'
+import OrderService from './../services/OrderService';
 
 
 function OrdersPage() {
   const navigate = useNavigate();
+  const orderService = new OrderService();
   return (
 
     <div className="container">
@@ -26,7 +28,7 @@ function OrdersPage() {
         </div>
 
       </div>
-      <OrderList />
+      <OrderList orderService={orderService} />
     </div>
   )
 }

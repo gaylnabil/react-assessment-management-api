@@ -1,59 +1,106 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { postRequest, updateRequest, getDataList, getDataSingle } from "../../apis/api";
 import SelectTag from "../SelectTag";
 import onValueChange from "../Events/ValueChangeEvent";
+import WholesalerService from "../../services/WholesalerService";
+import BeerService from './../../services/BeerService';
+import { validate } from './../validation/Validate';
+import FormErrors from "./../validation/FormErrors";
 
+/**
+ * 
+ * @param {*} props 
+ * @returns 
+ */
 function FormStock(props) {
+
+
   const navigate = useNavigate();
   const [ formData, setFormData ] = useState({
     quantity: 0,
     beerId: 0,
+    beer: null,
     wholesalerId: 0,
+    wholesaler: null
   });
 
   const [ beerList, setBeerList ] = useState([]);
   const [ wholesalerList, setWholesalerList ] = useState([]);
+  const [ stock, setStock ] = useState({
+    quantity: 0,
+  });
+  const [ total, setTotal ] = useState(0);
+  const [ formErrors, setFormErrors ] = useState({});
+  const [ isSubmit, setIsSubmit ] = useState(false);
+
 
   useEffect(() => {
     if (props.isEditing) {
       const getStock = async () => {
-        const data = await getDataSingle(`stocks`, props.id);
+        const data = await props.stockService.getStock(props.id);
         console.log("data: ", JSON.stringify(data));
         //console.log("data: ", response);
-        setFormData((prevData) => {
-          //return { ...prevData, ...data };
-          return { ...data };
-        });
-      };
+        setFormData(data);
+      }
 
       getStock();
     } else {
-      const GetList = async (url, setData) => {
-        const data = await getDataList(url);
-        //console.log("data: ", JSON.stringify(data));
-        //console.log("data: ", response);
-        setData(data);
-      };
+      const GetList = async () => {
+        let data = await new WholesalerService().getAllWholesalers();
+        setWholesalerList(data);
 
-      GetList("wholesalers", setWholesalerList);
-      GetList("beers", setBeerList);
+        data = await new BeerService().getAllBeers();
+        setBeerList(data);
+      }
+
+      GetList();
     }
-  }, [ props.id, props.isEditing ]);
+  }, [ props.id, props.isEditing, props.stockService ]);
 
-  const handleValueChange = (event) => onValueChange(event, setFormData);
+  useEffect(() => {
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    console.log("handleSubmit", JSON.stringify(formData));
+    if (formData.wholesalerId === 0 || formData.beerId === 0) return;
+    const getStockByWholesalerAndBeer = async () => {
+      const stock = await props.stockService.getStockByWholesalerAndBeer(
+        formData.wholesalerId,
+        formData.beerId
+      );
+
+      console.log("Single Stock:", stock);
+
+
+      setStock(stock ? stock : { quantity: 0 });
+    };
+
+    getStockByWholesalerAndBeer();
+
+  }, [ formData.wholesalerId, formData.beerId, props.stockService ]);
+
+
+  useEffect(() => {
+    setTotal(formData.quantity + stock.quantity);
+  }, [ formData.quantity, stock.quantity ]);
+
+  useEffect(() => {
+
+    if (Object.keys(formErrors).length > 0 || !isSubmit) return;
 
     const requestStock = async () => {
       try {
+        // console.log("handleSubmit", formData);
         let response = null;
         if (props.isEditing) {
-          response = await updateRequest(`stocks`, props.id, formData);
-        } else {
-          response = await postRequest(`stocks`, formData);
+          response = await props.stockService.updateStock(props.id, formData);
+
+        } else if (stock.id !== undefined) {
+          console.log("stock: ", stock);
+          //setFormData(prevData => ({ ...prevData, quantity: total }));
+          //setStock(prevData => ({ ...prevData, quantity: total }))
+          console.log("handleSubmit (2)", formData);
+          response = await props.stockService.updateStock(stock.id, { ...stock, quantity: total });
+        }
+        else {
+          response = await props.stockService.addStock(formData);
         }
 
         console.log(response);
@@ -61,11 +108,34 @@ function FormStock(props) {
           navigate("/wholesalers");
         }
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     };
 
     requestStock();
+  }, [ formErrors, isSubmit, stock, props.id, formData, props.stockService, props.isEditing, navigate, total ])
+
+
+  const handleValueChange = (event) => {
+    setIsSubmit(false);
+    onValueChange(event, setFormData);
+    setFormErrors(validate(formData));
+
+    const { type, value } = event.target;
+    if (type === 'number') {
+      setTotal(stock.quantity + Number(value))
+    }
+  };
+
+  const handleOnBlur = (event) => {
+    onValueChange(event, setFormData);
+    setFormErrors(validate(formData));
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setFormErrors(validate(formData));
+    setIsSubmit(true);
   };
 
   // console.log("file: FormStock.jsx:89 ~ FormStock ~ formData:", formData);
@@ -92,6 +162,7 @@ function FormStock(props) {
                 defaultValue={"Choose Beer"}
                 list={beerList}
                 onChange={handleValueChange}
+                onBlur={handleOnBlur}
                 required={true}
               />
             )}
@@ -110,11 +181,28 @@ function FormStock(props) {
                 defaultValue={"Choose Wholesaler"}
                 list={wholesalerList}
                 onChange={handleValueChange}
+                onBlur={handleOnBlur}
                 required={true}
               />
             )}
           </div>
 
+          <div className="input-group mb-3 ">
+            <ul>
+              <li>
+                <span>Quantity in the Stock:&nbsp;</span>
+                <span><b>{stock ? stock.quantity : 0}</b></span>
+              </li>
+              {
+                !props.isEditing &&
+                <li>
+                  <span>Stock Total:&nbsp;</span>
+                  <span><b>{total}</b></span>
+                </li>
+              }
+
+            </ul>
+          </div>
           <div className="form-group mb-3 ">
             <label htmlFor="name">Quantity</label>
             <input
@@ -122,8 +210,11 @@ function FormStock(props) {
               className="form-control"
               id="quantity"
               name="quantity"
+              min="0"
+              max="1000"
               value={formData.quantity}
               onChange={handleValueChange}
+              onBlur={handleOnBlur}
               placeholder="Enter Quantity Stock..."
             />
           </div>
@@ -140,6 +231,9 @@ function FormStock(props) {
             >
               Back
             </button>
+          </div>
+          <div className="form-group mb-3">
+            {Object.keys(formErrors).length > 0 && <FormErrors errors={formErrors} />}
           </div>
         </form>
       </div>

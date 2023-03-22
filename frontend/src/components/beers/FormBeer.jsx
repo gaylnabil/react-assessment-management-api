@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { postRequest, updateRequest, getDataSingle, getDataList } from '../../apis/api';
 import { useNavigate } from 'react-router-dom';
 import SelectTag from '../SelectTag';
 import onValueChange from './../Events/ValueChangeEvent';
+import BreweryService from './../../services/BreweryService';
 
 function FormBeer(props) {
 
@@ -19,8 +19,8 @@ function FormBeer(props) {
     });
 
     useEffect(() => {
-        const breweriesFindAll = async (id) => {
-            const data = await getDataList(`breweries`);
+        const breweriesFindAll = async () => {
+            const data = await new BreweryService().getAllBreweries();
             //console.log("data: ", JSON.stringify(data));
             //console.log("data: ", response);
             setBreweries(data);
@@ -33,7 +33,7 @@ function FormBeer(props) {
         if (props.isEditing) {
 
             const getBeer = async () => {
-                const response = await getDataSingle(`beers`, props.beerId);
+                const response = await props.beerService.getBeer(props.beerId);
                 const data = await response.data;
                 console.log("data: ", JSON.stringify(data));
                 //console.log("data: ", response);
@@ -44,7 +44,7 @@ function FormBeer(props) {
 
             getBeer();
         }
-    }, [ props.isEditing, props.beerId ]);
+    }, [ props.isEditing, props.beerId, props.beerService ]);
 
     // const optionsElement = breweries.map((brewery) => (
     //     <option key={brewery.id} value={brewery.id} >{brewery.name}</option>
@@ -72,10 +72,10 @@ function FormBeer(props) {
                 let response = null;
 
                 if (props.isEditing) {
-                    response = await updateRequest(`beers/${props.beerId}`, formData)
+                    response = await props.beerService.updateBeer(props.beerId, formData)
                 } else {
 
-                    response = await postRequest('beers', formData)
+                    response = await props.beerService.addBeer(formData)
                 }
                 console.log(response);
                 if (response.status === 201 || response.status === 204) {

@@ -1,30 +1,27 @@
 import React, { useEffect, useState } from "react";
-import { getWholesalersTheirStocks } from "../../apis/api";
 import Wholesaler from "./Wholesaler";
-
-function WholesalerList() {
+//import WholesalerService from "./../../services/WholesalerService";
+function WholesalerList(props) {
   const [ wholesalerList, setWholesalerList ] = useState([]);
 
-  const getWholesalers = async () => {
-    // const response = await api.get("wholesalers/stocks/beers");
-    const data = await getWholesalersTheirStocks();
 
-    // console.log("getWholesalerList:", data);
-
-    setWholesalerList(data);
-  };
 
   useEffect(() => {
+    const getWholesalers = async () => {
+      // url = "wholesalers/stocks/beers";
+      const data = await props.wholesalerService.getWholesalersTheirStocks();
+      setWholesalerList(data);
+    };
     getWholesalers();
-  }, []);
+  }, [ props.wholesalerService ]);
 
   const wholeElements = wholesalerList.map((wholesaler, index) => {
-    console.log(
-      "🚀 ~ file: WholesalerList.jsx:25 ~ wholeElements ~ wholesaler:",
-      wholesaler
-    );
+    // console.log(
+    //   "🚀 ~ file: WholesalerList.jsx:25 ~ wholeElements ~ wholesaler:",
+    //   wholesaler
+    // );
 
-    return <Wholesaler key={index} wholesaler={wholesaler} />
+    return <Wholesaler key={index} wholesaler={wholesaler} wholesalerService={props.wholesalerService} />
   });
 
   return (

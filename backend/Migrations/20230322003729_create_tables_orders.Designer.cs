@@ -11,7 +11,7 @@ using react_assessment_management_api.Data;
 namespace react_assessment_management_api.Migrations
 {
     [DbContext(typeof(AssessementDbContext))]
-    [Migration("20230320122505_create_tables_orders")]
+    [Migration("20230322003729_create_tables_orders")]
     partial class create_tables_orders
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
