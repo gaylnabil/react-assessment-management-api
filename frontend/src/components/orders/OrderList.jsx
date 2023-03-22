@@ -4,8 +4,8 @@ import React, { useState, useEffect } from "react";
 function OrderList(props) {
 
   const [ orderList, setOrderList ] = useState([]);
-  // const navigate = useNavigate();
 
+  // Gets the order list from the service and stores it in the config.
   const getOrders = async () => {
     const data = await props.orderService.getOrdersWithWholesalersAndBeers();
     console.log("getOrderList:", data);
@@ -53,20 +53,6 @@ function OrderList(props) {
                   })}
                 </td>
                 <td>
-                  {/* <button
-                    className="btn btn-warning"
-                    onClick={() => {
-                      navigate(`/orders/${order.id}/edit/`, {
-                        state: {
-                          beerName: order.beer.name,
-                          wholesalerName: props.wholesaler.name,
-                          isEditing: true,
-                        },
-                      });
-                    }}
-                  >
-                    Edit
-                  </button> */}
                 </td>
               </tr>
             );

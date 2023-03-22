@@ -1,15 +1,11 @@
 import React from 'react';
 
 import { useNavigate } from "react-router-dom";
-// import api from './../../apis/api';
 import Modal from '../Modal';
 
 function Beer(props) {
 
   const navigate = useNavigate();
-
-  // const [ classModalName, setClassModalName ] = useState("");
-
 
   return (
     <div className="row p-1 my-1 beer-content">

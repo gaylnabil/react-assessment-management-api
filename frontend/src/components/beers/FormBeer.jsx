@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import SelectTag from '../SelectTag';
+import SelectTag from '../inputs/SelectTag';
 import onValueChange from './../Events/ValueChangeEvent';
 import BreweryService from './../../services/BreweryService';
 

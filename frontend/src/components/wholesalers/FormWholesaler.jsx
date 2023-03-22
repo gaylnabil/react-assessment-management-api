@@ -1,36 +1,43 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import onValueChange from './../Events/ValueChangeEvent';
-import { validate } from './../validation/Validate';
 import FormErrors from "./../validation/FormErrors";
+import { useForm } from "react-hook-form";
 
 function FormWholesaler(props) {
 
     const navigate = useNavigate();
-    const [ formData, setFormData ] = useState({
-        name: "",
+
+    // Creates a ` useForm ` that can be used to submit a request.
+    const { register, handleSubmit, formState: { errors }, setValue } = useForm({
+        defaultValues: {
+            name: "",
+        }
     });
 
-    const [ formErrors, setFormErrors ] = useState({});
-    const [ isSubmit, setIsSubmit ] = useState(false);
+    console.log("errors:", Object.keys(errors));
 
     useEffect(() => {
         if (props.isEditing) {
 
             const getWholesaler = async () => {
                 const data = await props.wholesalerService.getWholesaler(props.wholesalerId);
-                console.log("data: ", JSON.stringify(data));
+                console.log("data: ", Object.entries(data));
                 //console.log("data: ", response);
-                setFormData(data);
+                for (const [ name, value ] of Object.entries(data)) {
+
+                    setValue(name, value);
+                }
             }
 
             getWholesaler();
         }
-    }, [ props.isEditing, props.wholesalerId, props.wholesalerService ]);
+    }, [ props.isEditing, props.wholesalerId, props.wholesalerService, setValue ]);
 
-    useEffect(() => {
+    const onSubmit = (formData) => {
 
-        if (Object.keys(formErrors).length > 0 || !isSubmit) return;
+        console.log("handleSubmit", formData);
+
+        if (Object.keys(errors).length > 0) return;
 
         const requestWholesaler = async () => {
             try {
@@ -52,50 +59,13 @@ function FormWholesaler(props) {
         }
 
         requestWholesaler();
-    }, [ formData, formErrors, props.wholesalerService, isSubmit, navigate, props.isEditing, props.wholesalerId ])
-
-    const handleValueChange = (event) => {
-        setIsSubmit(false);
-        onValueChange(event, setFormData);
-        setFormErrors(validate(formData));
     }
-    const handleOnBlur = (event) => {
-
-        setFormErrors(validate(formData));
-    }
-    const handleOnKeyDown = (event) => {
-
-        setFormErrors(validate(formData));
-        console.log("event.key:", event.key);
-    }
-
-    // const handleValueChange = (event) => {
-    //     setFormData(prevData => {
-    //         // const {name, type, value, checked} = event.target;
-    //         const { name, type, value } = event.target;
-    //         console.log([ name ], ":", type, ":", value);
-    //         return {
-    //             ...prevData,
-    //             [ name ]: type === 'number' ? Number(value) : value
-    //         }
-    //     });
-    // }
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setFormErrors(validate(formData));
-        setIsSubmit(true);
-
-        console.log("handleSubmit", formData);
-    }
-    //console.log("formData: ", formData);
-
 
     return (
         <div className="container mt-3">
             <div className="row">
                 <h1 className="text-center ">{props.isEditing ? "Edit Wholesaler" : "Add Wholesaler's information"} </h1>
-                <form onSubmit={handleSubmit} className="col-lg-5 offset-3 center-block">
+                <form onSubmit={handleSubmit(onSubmit)} className="col-lg-5 offset-3 center-block">
                     <div className="form-group mb-3 ">
                         <label
                             htmlFor="name"
@@ -106,11 +76,10 @@ function FormWholesaler(props) {
                             type="text"
                             className="form-control"
                             id="name"
-                            name="name"
-                            value={formData.name}
-                            onChange={handleValueChange}
-                            onBlur={handleOnBlur}
-                            onKeyPress={handleOnKeyDown}
+                            {...register("name", {
+                                required: 'The wholesaler cannot be empty.',
+
+                            })}
                             placeholder="Enter Wholesaler's Name..."
                         />
                     </div>
@@ -134,7 +103,7 @@ function FormWholesaler(props) {
                         </button>
                     </div>
                     <div className="form-group mb-3">
-                        {Object.keys(formErrors).length > 0 && <FormErrors errors={formErrors} />}
+                        {Object.keys(errors).length > 0 && <FormErrors errors={errors} />}
                     </div>
                 </form>
             </div>

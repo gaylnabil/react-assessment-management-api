@@ -11,16 +11,12 @@ function SelectTag(props) {
     return (
         <>
             <select
+                {...props.register}
                 id={props.id}
-                name={props.name}
                 aria-label={props.label}
-                value={props.value}
-                onChange={props.onChange}
-                onBlur={props.onBlur}
-                required={props.required}
                 className="form-select"
             >
-                <option value="0">{props.defaultValue}</option>
+                <option value="">{props.defaultValue}</option>
                 {optionsElement}
             </select>
         </>
