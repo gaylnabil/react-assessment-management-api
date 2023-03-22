@@ -122,13 +122,13 @@ namespace react_assessment_management_api.Controllers
         {
             if (_context.Beers == null)
             {
-                return NotFound();
+                return null;
             }
             var beer = await _context.Beers.Where(b => b.Stocks.Any(s => s.WholesalerId == id)).ToListAsync();
                                           
             if (beer == null)
             {
-                return NotFound();
+                return null;
             }
 
             return beer;

@@ -1,61 +1,164 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import onValueChange from "./../Events/ValueChangeEvent";
-import SelectTag from "./../SelectTag";
+import SelectTag from "../inputs/SelectTag";
 import FormErrors from "../validation/FormErrors";
 import WholesalerService from './../../services/WholesalerService';
-import { validate } from './../validation/Validate';
 import StockService from './../../services/StockService';
+import { useForm } from "react-hook-form";
+
 function FormOrder(props) {
   const navigate = useNavigate();
-  const [ formData, setFormData ] = useState({
-    clientName: "",
+  const [ data, setData ] = useState({
     quantity: 0,
     discount: 0,
     totalPrice: 0,
-    beerId: 0,
-    wholesalerId: 0,
     quantityRest: 0,
   });
-  const [ formErrors, setFormErrors ] = useState({});
-  const [ isSubmit, setIsSubmit ] = useState(false);
-
   const [ beerList, setBeerList ] = useState([]);
   const [ wholesalerList, setWholesalerList ] = useState([]);
   const [ beerPrice, setBeerPrice ] = useState(0);
   const [ stock, setStock ] = useState({
     quantity: 0,
   });
-
-  useEffect(() => {
-    if (props.isEditing) {
-      // const getStock = async () => {
-      //     const response = await api.get(`orders/${props.id}`);
-      //     const data = await response.data;
-      //     console.log("data: ", JSON.stringify(data));
-      //     //console.log("data: ", response);
-      //     setFormData((prevData) => {
-      //         //return { ...prevData, ...data };
-      //         return { ...prevData, ...data };
-      //     });
-      // };
-      // getStock();
-    } else {
-      const getAllWholesalers = async () => {
-        const data = await new WholesalerService().getAllWholesalers();
-
-        setWholesalerList(data);
-      };
-
-      getAllWholesalers();
+  const { register, handleSubmit, formState: { errors }, setValue, getValues } = useForm({
+    defaultValues: {
+      clientName: "",
+      quantity: 0,
+      discount: 0,
+      totalPrice: 0,
+      beerId: 0,
+      wholesalerId: 0,
     }
-  }, [ props.id, props.isEditing ]);
+  });
+
+  console.log("errors:", Object.entries(errors));
+
+  useEffect(() => {
+    const getAllWholesalers = async () => {
+      const dataResult = await new WholesalerService().getAllWholesalers();
+
+      setWholesalerList(dataResult);
+    };
+
+    getAllWholesalers();
+
+  }, [ props.id ]);
 
 
   useEffect(() => {
 
-    if (Object.keys(formErrors).length > 0 || !isSubmit) return;
+    const calculateTotalPrice = (quantity, price) => {
+      let discount = 0;
 
+      if (quantity >= 10 && quantity < 20) {
+        discount = 10;
+      }
+      if (quantity >= 20) {
+        discount = 20;
+      }
+      const result = price * quantity * (1 - discount / 100);
+      setValue('discount', discount);
+      setValue('totalPrice', result);
+
+      setData((prevData) => ({
+        ...prevData,
+        discount: discount,
+        totalPrice: result,
+      }));
+
+
+    }
+    calculateTotalPrice(getValues("quantity"), beerPrice);
+
+  }, [ getValues, setValue, beerPrice ]);
+
+  const handleValueChange = (e) => {
+    const { name, value } = e.target;
+    console.log("[name, value]:", name, ",", value);
+    setValue(name, value);
+    switch (name) {
+      case 'beerId':
+
+        const beerId = Number(value);
+
+        const beer = beerList.find((beer) => {
+          return beer.id === beerId;
+        });
+
+        const price = beer ? beer.price : 0;
+
+        setBeerPrice(price);
+
+        const getSingleStockByWholesalerAndBeer = async () => {
+          const data = await props.orderService.getStockByWholesalerAndBeer(
+            getValues("wholesalerId"),
+            beerId
+          );
+
+          console.log("Single Stock:", data);
+
+          setStock(data);
+        };
+        console.log("BeerId:", value);
+        getSingleStockByWholesalerAndBeer();
+        break;
+
+      case 'quantity':
+        const rest = stock.quantity - Number(value);
+
+        setData(prevData => ({ ...prevData, quantityRest: rest }));
+
+        const calculateTotalPrice = (quantity, price) => {
+          let discount = 0;
+
+          if (quantity >= 10 && quantity < 20) {
+            discount = 10;
+          }
+          if (quantity >= 20) {
+            discount = 20;
+          }
+          const result = price * quantity * (1 - discount / 100);
+          setValue('discount', discount);
+          setValue('totalPrice', result);
+
+          setData((prevData) => ({
+            ...prevData,
+            discount: discount,
+            totalPrice: result,
+          }));
+
+
+        }
+        calculateTotalPrice(Number(value), beerPrice);
+
+        break;
+      case 'wholesalerId':
+        const id = Number(value);
+
+        const getWholeSalerBeers = async (wholesalerID) => {
+          if (wholesalerID !== 0) {
+            const dataResult = await props.orderService.getWholesalerItsBeers(
+              wholesalerID
+            );
+            setBeerList(dataResult);
+          }
+        };
+
+        getWholeSalerBeers(id);
+        setValue('beerId', '');
+
+        setStock({});
+        setBeerPrice(0);
+        break;
+      default:
+        break;
+    }
+  };
+
+  const onSubmit = (formData) => {
+    console.log("onSubmit:", formData);
+
+    if (Object.keys(errors).length > 0) return;
     const requestOrder = async () => {
       try {
         const response = await props.orderService.addOrder(formData);
@@ -70,7 +173,7 @@ function FormOrder(props) {
 
     const updateQuantity = async () => {
       try {
-        const response = await new StockService().updateStock(stock.id, { ...stock, quantity: formData.quantityRest });
+        const response = await new StockService().updateStock(stock.id, { ...stock, quantity: data.quantityRest });
         console.log(response);
       } catch (error) {
         console.log(error);
@@ -79,109 +182,6 @@ function FormOrder(props) {
     updateQuantity();
     requestOrder();
 
-  }, [ formErrors, isSubmit, props.orderService, navigate, formData ])
-
-  useEffect(() => {
-    calculateTotalPrice(formData.quantity, beerPrice);
-  }, [ formData.quantity, beerPrice ]);
-
-  const handleValueChange = (e) => {
-
-    setIsSubmit(false);
-    onValueChange(e, setFormData);
-
-    setFormErrors(validate(formData));
-  };
-
-  const handleOnBlur = (e) => {
-    setFormErrors(validate(formData));
-  }
-
-
-  const handlePriceValueByBeerIdChange = (e) => {
-    handleValueChange(e);
-
-    const beerId = Number(e.target.value);
-
-    const beer = beerList.find((beer) => {
-      return beer.id === beerId;
-    });
-
-    const price = beer ? beer.price : 0;
-
-    setBeerPrice(price);
-
-    const getSingleStockByWholesalerAndBeer = async () => {
-      const data = await props.orderService.getStockByWholesalerAndBeer(
-        formData.wholesalerId,
-        beerId
-      );
-
-      console.log("Single Stock:", data);
-
-      setStock(data);
-    };
-
-    getSingleStockByWholesalerAndBeer();
-  };
-
-  const handleQuantityChange = (e) => {
-    handleValueChange(e);
-
-    setFormData(prevData => {
-      return {
-        ...prevData, quantityRest: (stock.quantity - Number(e.target.value))
-      }
-    })
-
-    setFormErrors(validate(formData));
-
-  };
-
-  const handleWholesalerChanged = (e) => {
-    handleValueChange(e);
-
-    const id = Number(e.target.value);
-
-    const getWholeSalerBeers = async (wholesalerID) => {
-      if (wholesalerID !== 0) {
-        const data = await props.orderService.getWholesalerItsBeers(
-          wholesalerID
-        );
-        //console.log("data: ", response);
-        setBeerList(data);
-      }
-    };
-
-    getWholeSalerBeers(id);
-    setFormData((prevData) => ({ ...prevData, beerId: 0 }));
-
-    setStock({});
-    setBeerPrice(0);
-  };
-
-  const calculateTotalPrice = (quantity, price) => {
-    let discount = 0;
-
-    if (quantity >= 10 && quantity < 20) {
-      discount = 10;
-    }
-    if (quantity >= 20) {
-      discount = 20;
-    }
-    const result = price * quantity * (1 - discount / 100);
-
-    setFormData((prevData) => ({
-      ...prevData,
-      discount: discount,
-      totalPrice: result,
-    }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setFormErrors(validate(formData));
-    setIsSubmit(true);
   }
 
   return (
@@ -192,7 +192,7 @@ function FormOrder(props) {
           {props.isEditing ? "Edit Order" : "New Order"}
         </h1>
         <form
-          onSubmit={handleSubmit}
+          onSubmit={handleSubmit(onSubmit)}
           className="col-sm-7 col-md-8 col-lg-7 offset-2 center-block"
         >
           <div className="form-group mb-3 ">
@@ -201,10 +201,10 @@ function FormOrder(props) {
               type="text"
               className="form-control"
               id="clientName"
-              name="clientName"
-              value={formData.clientName}
-              onChange={handleValueChange}
-              onBlur={handleOnBlur}
+              {...register("clientName", {
+                required: 'The Client cannot be empty.',
+
+              })}
               placeholder="Enter Client Name..."
             />
           </div>
@@ -217,12 +217,13 @@ function FormOrder(props) {
                 id={"wholesalerId"}
                 name={"wholesalerId"}
                 label={"Wholesaler Name"}
-                value={formData.wholesalerId}
+                register={
+                  register("wholesalerId", {
+                    required: 'The Wholesaler must be exist.',
+                    onChange: handleValueChange
+                  })}
                 defaultValue={"Choose Wholesaler"}
                 list={wholesalerList}
-                onChange={handleWholesalerChanged}
-                onBlur={handleOnBlur}
-                required={true}
               />
             )}
           </div>
@@ -233,14 +234,14 @@ function FormOrder(props) {
             ) : (
               <SelectTag
                 id={"beerId"}
-                name={"beerId"}
+                register={
+                  register("beerId", {
+                    required: 'The Beer ust be exist.',
+                    onChange: handleValueChange
+                  })}
                 label={"Select Beers"}
-                value={formData.beerId}
                 defaultValue={"Choose Beer"}
                 list={beerList}
-                onChange={handlePriceValueByBeerIdChange}
-                required={true}
-                onBlur={handleOnBlur}
               />
             )}
           </div>
@@ -258,7 +259,7 @@ function FormOrder(props) {
                 </b>
               </li>
               <li>
-                <label htmlFor="name">Quantity in the Stock: &nbsp;</label>
+                <label htmlFor="name">Quantity left in The stock: &nbsp;</label>
                 <b>{stock.quantity}</b>
               </li>
             </ul>
@@ -268,14 +269,27 @@ function FormOrder(props) {
             <label htmlFor="name">Quantity</label>
             <input
               type="number"
-              className="form-control"
               id="quantity"
-              name="quantity"
-              value={formData.quantity}
+              className="form-control"
+              {...register("quantity", {
+                onChange: handleValueChange,
+                min: {
+                  value: 1,
+                  message: 'The Quantity cannot be Zero.'
+                },
+                max: {
+                  value: 1000,
+                  message: 'The Quantity cannot be more than 1000.'
+                },
+                validate: {
+                  quantityLessThanStock: (value) => {
+                    //console.log("value:", value);
+                    return (stock && value <= stock.quantity) || "The number of beers ordered cannot be greater than the wholesaler's stock.";
+                  }
+                },
+              })}
               min="0"
-              max="100"
-              onChange={handleQuantityChange}
-              onBlur={handleOnBlur}
+              max="2000"
               placeholder="Enter Quantity Stock..."
             />
           </div>
@@ -283,7 +297,7 @@ function FormOrder(props) {
             <label htmlFor="name">Discount:&nbsp;</label>
             <b>
               {" "}
-              {(formData.discount / 100).toLocaleString("en-US", {
+              {(data.discount / 100).toLocaleString("en-US", {
                 style: "percent",
               })}
             </b>
@@ -293,11 +307,18 @@ function FormOrder(props) {
 
             <b style={{ color: "#009714" }}>
               {" "}
-              {formData.totalPrice.toLocaleString("en-US", {
+              {data.totalPrice.toLocaleString("en-US", {
                 style: "currency",
                 currency: "USD",
                 maximumFractionDigits: 2,
               })}
+            </b>
+          </div>
+          <div className="input-group mb-3 ">
+            <label htmlFor="name">Quantity will Leave in the stock: &nbsp;</label>
+
+            <b style={{ color: "#009714" }}>
+              {data.quantityRest}
             </b>
           </div>
 
@@ -315,10 +336,11 @@ function FormOrder(props) {
             </button>
           </div>
           <div className="form-group mb-3">
-            {Object.keys(formErrors).length > 0 && <FormErrors errors={formErrors} />}
+            {Object.keys(errors).length > 0 && <FormErrors errors={errors} />}
           </div>
         </form>
       </div>
+
     </div>
   );
 }
