@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { getOrdersWithWholesalersAndBeers } from "../../apis/api";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 
-function OrderList() {
+function OrderList(props) {
+
   const [ orderList, setOrderList ] = useState([]);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const getOrders = async () => {
-    const data = await getOrdersWithWholesalersAndBeers();
+    const data = await props.orderService.getOrdersWithWholesalersAndBeers();
     console.log("getOrderList:", data);
     setOrderList(data);
   };
@@ -41,30 +41,32 @@ function OrderList() {
                 <td>{order.wholesaler.name}</td>
                 <th scope="row">{order.quantity}</th>
                 <td>
-                  {
-                    (order.discount / 100).toLocaleString("en-US", {
-                      style: "percent",
-                    })
-                  }
+                  {(order.discount / 100).toLocaleString("en-US", {
+                    style: "percent",
+                  })}
                 </td>
                 <td>
-                  {
-                    order.totalPrice.toLocaleString("en-US", {
-                      style: "currency",
-                      currency: "USD",
-                      maximumFractionDigits: 2,
-                    })
-                  }
+                  {order.totalPrice.toLocaleString("en-US", {
+                    style: "currency",
+                    currency: "USD",
+                    maximumFractionDigits: 2,
+                  })}
                 </td>
                 <td>
-                  <button
+                  {/* <button
                     className="btn btn-warning"
                     onClick={() => {
-                      //navigate(`/orders/${order.id}/edit/`, { state: { beerName: order.beer.name, wholesalerName: props.wholesaler.name, isEditing: true } })
+                      navigate(`/orders/${order.id}/edit/`, {
+                        state: {
+                          beerName: order.beer.name,
+                          wholesalerName: props.wholesaler.name,
+                          isEditing: true,
+                        },
+                      });
                     }}
                   >
                     Edit
-                  </button>
+                  </button> */}
                 </td>
               </tr>
             );

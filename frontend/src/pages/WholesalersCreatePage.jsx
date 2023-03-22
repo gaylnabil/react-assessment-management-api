@@ -2,10 +2,13 @@ import React from "react";
 import { useParams, useLocation } from "react-router";
 
 import FormWholesaler from "../components/wholesalers/FormWholesaler";
-// import api from "../apis/api";
+import WholesalerService from './../services/WholesalerService';
+
 
 function WholesalersCreatePage() {
-  // const [beer, setBeer] = useState({});
+
+  const wholesalerService = new WholesalerService();
+
   const { id } = useParams();
   const { state } = useLocation();
 
@@ -16,7 +19,11 @@ function WholesalersCreatePage() {
     <div>
       <h1>{id}</h1>
 
-      <FormWholesaler isEditing={state.isEditing} wholesalerId={id} />
+      <FormWholesaler
+        isEditing={state.isEditing}
+        wholesalerId={id}
+        wholesalerService={wholesalerService}
+      />
     </div>
   );
 }

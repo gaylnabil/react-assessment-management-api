@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router";
-
 import FormBeer from "../components/beers/FormBeer";
-// import api from "../apis/api";
-
+import BeerService from './../services/BeerService';
 function BeersCreatePage() {
-  // const [beer, setBeer] = useState({});
+  const beerService = new BeerService();
   const [ isEditing, setIsEditing ] = useState(false);
   const { id } = useParams();
 
@@ -18,7 +16,7 @@ function BeersCreatePage() {
   return (
     <div>
       <h1>{id}</h1>
-      <FormBeer isEditing={isEditing} beerId={id} />
+      <FormBeer isEditing={isEditing} beerId={id} beerService={beerService} />
     </div>
   );
 }

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { postRequest, updateRequest, getDataSingle } from '../../apis/api';
 import onValueChange from './../Events/ValueChangeEvent';
+import { validate } from './../validation/Validate';
+import FormErrors from "./../validation/FormErrors";
 
 function FormWholesaler(props) {
 
@@ -10,24 +11,63 @@ function FormWholesaler(props) {
         name: "",
     });
 
+    const [ formErrors, setFormErrors ] = useState({});
+    const [ isSubmit, setIsSubmit ] = useState(false);
+
     useEffect(() => {
         if (props.isEditing) {
 
             const getWholesaler = async () => {
-                const data = await getDataSingle(`wholesalers`, props.wholesalerId);
+                const data = await props.wholesalerService.getWholesaler(props.wholesalerId);
                 console.log("data: ", JSON.stringify(data));
                 //console.log("data: ", response);
-                setFormData(prevData => {
-                    return { ...data }
-                })
+                setFormData(data);
             }
 
             getWholesaler();
         }
-    }, [ props.isEditing, props.wholesalerId ]);
+    }, [ props.isEditing, props.wholesalerId, props.wholesalerService ]);
 
+    useEffect(() => {
 
-    const handleValueChange = (event) => onValueChange(event, setFormData);
+        if (Object.keys(formErrors).length > 0 || !isSubmit) return;
+
+        const requestWholesaler = async () => {
+            try {
+                let response = null;
+
+                if (props.isEditing) {
+                    response = await props.wholesalerService.updateWholesaler(props.wholesalerId, formData);
+                } else {
+                    response = await props.wholesalerService.addWholesaler(formData)
+                }
+                console.log(response);
+                if (response.status === 201 || response.status === 204) {
+                    navigate("/wholesalers");
+                }
+            } catch (error) {
+                console.error(error);
+            }
+
+        }
+
+        requestWholesaler();
+    }, [ formData, formErrors, props.wholesalerService, isSubmit, navigate, props.isEditing, props.wholesalerId ])
+
+    const handleValueChange = (event) => {
+        setIsSubmit(false);
+        onValueChange(event, setFormData);
+        setFormErrors(validate(formData));
+    }
+    const handleOnBlur = (event) => {
+
+        setFormErrors(validate(formData));
+    }
+    const handleOnKeyDown = (event) => {
+
+        setFormErrors(validate(formData));
+        console.log("event.key:", event.key);
+    }
 
     // const handleValueChange = (event) => {
     //     setFormData(prevData => {
@@ -43,28 +83,10 @@ function FormWholesaler(props) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setFormErrors(validate(formData));
+        setIsSubmit(true);
+
         console.log("handleSubmit", formData);
-
-        const requestWholesaler = async () => {
-            try {
-                let response = null;
-
-                if (props.isEditing) {
-                    response = await updateRequest(`wholesalers`, props.wholesalerId, formData)
-                } else {
-                    response = await postRequest('wholesalers', formData)
-                }
-                console.log(response);
-                if (response.status === 201 || response.status === 204) {
-                    navigate("/wholesalers");
-                }
-            } catch (error) {
-                console.log(error);
-            }
-
-        }
-
-        requestWholesaler();
     }
     //console.log("formData: ", formData);
 
@@ -87,6 +109,8 @@ function FormWholesaler(props) {
                             name="name"
                             value={formData.name}
                             onChange={handleValueChange}
+                            onBlur={handleOnBlur}
+                            onKeyPress={handleOnKeyDown}
                             placeholder="Enter Wholesaler's Name..."
                         />
                     </div>
@@ -108,6 +132,9 @@ function FormWholesaler(props) {
                         >
                             Back
                         </button>
+                    </div>
+                    <div className="form-group mb-3">
+                        {Object.keys(formErrors).length > 0 && <FormErrors errors={formErrors} />}
                     </div>
                 </form>
             </div>

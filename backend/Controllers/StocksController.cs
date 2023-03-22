@@ -49,23 +49,36 @@ namespace react_assessment_management_api.Controllers
             return stock;
         }
 
-        // GET: api/Stocks/Wholesaler/5/Beer/2
-        [HttpGet("Wholesaler/{wholesalerId}/Beer/{beerId}")]
-        public async Task<ActionResult<Stock>> GetStockByWholesalerAndBeer(int wholesalerId, int beerId)
+        // GET: api/Stocks/Wholesaler/5/Beers/2
+        [HttpGet("Wholesalers/{wholesalerId}/Beers/{beerId}")]
+        public async Task<ActionResult<Stock>?> GetStockByWholesalerAndBeer(int wholesalerId, int beerId)
         {
             if (_context.Stocks == null)
             {
-                return NotFound();
+                return null;
             }
             var stock = await _context.Stocks.Where(s => s.WholesalerId == wholesalerId && s.BeerId == beerId).SingleOrDefaultAsync();
-
-            if (stock == null)
-            {
-                return NotFound();
-            }
-
+            
             return stock;
         }
+
+        //[HttpGet("Wholesalers/{wholesalerId}/Beers/{beerId}/Quantities")]
+        //public async Task<ActionResult<int>> GetQuantityStockByWholesalerAndBeer(int wholesalerId, int beerId)
+        //{
+        //    if (_context.Stocks == null)
+        //    {
+        //        return 0;
+        //    }
+        //    var stock = await _context.Stocks.Where(s => s.WholesalerId == wholesalerId && s.BeerId == beerId).SingleOrDefaultAsync();
+
+        //    if (stock == null)
+        //    {
+        //        return 0;
+        //    }
+
+        //    return stock.Quantity;
+
+        //}
 
         // PUT: api/Stocks/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754

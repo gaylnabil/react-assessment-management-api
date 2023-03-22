@@ -1,8 +1,11 @@
 import React from 'react'
 import FormStock from '../components/stocks/FormStock'
 import { useParams, useLocation } from 'react-router-dom';
+import StockService from './../services/StockService';
 
 function StockEditPage() {
+    const stockService = new StockService();
+
     const { id } = useParams();
     const { state } = useLocation();
 
@@ -10,7 +13,13 @@ function StockEditPage() {
     return (
         <div>
             <h1>Stock id: {id}</h1>
-            <FormStock id={id} beerName={state.beerName} wholesalerName={state.wholesalerName} isEditing={state.isEditing} />
+            <FormStock
+                id={id}
+                beerName={state.beerName}
+                wholesalerName={state.wholesalerName}
+                isEditing={state.isEditing}
+                stockService={stockService}
+            />
         </div>
     )
 }

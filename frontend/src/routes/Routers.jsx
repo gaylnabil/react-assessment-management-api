@@ -8,7 +8,6 @@ import StocksPage from '../pages/StocksPage';
 import OrdersPage from '../pages/OrdersPage';
 import OrderCreatePage from '../pages/OrderCreatePage';
 // import FormBeer from '../components/Beers/FormBeer';
-
 function Routers() {
     return (
         <Routes>

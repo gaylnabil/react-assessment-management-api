@@ -1,32 +1,31 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  getWholesalerItsBeers,
-  getDataList,
-  postRequest,
-  getStockByWholesalerAndBeer,
-} from "../../apis/api";
 import onValueChange from "./../Events/ValueChangeEvent";
 import SelectTag from "./../SelectTag";
 import FormErrors from "../validation/FormErrors";
-
+import WholesalerService from './../../services/WholesalerService';
+import { validate } from './../validation/Validate';
+import StockService from './../../services/StockService';
 function FormOrder(props) {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
+  const [ formData, setFormData ] = useState({
     clientName: "",
     quantity: 0,
     discount: 0,
     totalPrice: 0,
     beerId: 0,
     wholesalerId: 0,
+    quantityRest: 0,
   });
-  const [formErrors, setFormErrors] = useState({});
-  const [isSubmit, setIsSubmit] = useState(false);
+  const [ formErrors, setFormErrors ] = useState({});
+  const [ isSubmit, setIsSubmit ] = useState(false);
 
-  const [beerList, setBeerList] = useState([]);
-  const [wholesalerList, setWholesalerList] = useState([]);
-  const [beerPrice, setBeerPrice] = useState(0);
-  const [quantityStock, setQuantityStock] = useState(0);
+  const [ beerList, setBeerList ] = useState([]);
+  const [ wholesalerList, setWholesalerList ] = useState([]);
+  const [ beerPrice, setBeerPrice ] = useState(0);
+  const [ stock, setStock ] = useState({
+    quantity: 0,
+  });
 
   useEffect(() => {
     if (props.isEditing) {
@@ -42,26 +41,62 @@ function FormOrder(props) {
       // };
       // getStock();
     } else {
-      const GetList = async (url) => {
-        const data = await getDataList(url);
+      const getAllWholesalers = async () => {
+        const data = await new WholesalerService().getAllWholesalers();
 
         setWholesalerList(data);
       };
 
-      GetList("wholesalers");
-      // GetList("beers", setBeerList);
+      getAllWholesalers();
     }
-  }, [props.id, props.isEditing]);
+  }, [ props.id, props.isEditing ]);
+
+
+  useEffect(() => {
+
+    if (Object.keys(formErrors).length > 0 || !isSubmit) return;
+
+    const requestOrder = async () => {
+      try {
+        const response = await props.orderService.addOrder(formData);
+        console.log(response);
+        if (response.status === 201 || response.status === 204) {
+          navigate("/orders");
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    const updateQuantity = async () => {
+      try {
+        const response = await new StockService().updateStock(stock.id, { ...stock, quantity: formData.quantityRest });
+        console.log(response);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    updateQuantity();
+    requestOrder();
+
+  }, [ formErrors, isSubmit, props.orderService, navigate, formData ])
+
+  useEffect(() => {
+    calculateTotalPrice(formData.quantity, beerPrice);
+  }, [ formData.quantity, beerPrice ]);
 
   const handleValueChange = (e) => {
+
+    setIsSubmit(false);
     onValueChange(e, setFormData);
-    setFormErrors(validation(formData));
-    // console.log("handleValueChange formErrors:", formErrors, "IsSubmit:", isSubmit);
+
+    setFormErrors(validate(formData));
   };
 
   const handleOnBlur = (e) => {
-    setFormErrors(validation(formData));
-  };
+    setFormErrors(validate(formData));
+  }
+
 
   const handlePriceValueByBeerIdChange = (e) => {
     handleValueChange(e);
@@ -75,17 +110,16 @@ function FormOrder(props) {
     const price = beer ? beer.price : 0;
 
     setBeerPrice(price);
-    calculateTotalPrice(formData.quantity, price);
 
     const getSingleStockByWholesalerAndBeer = async () => {
-      const data = await getStockByWholesalerAndBeer(
+      const data = await props.orderService.getStockByWholesalerAndBeer(
         formData.wholesalerId,
         beerId
       );
 
       console.log("Single Stock:", data);
 
-      setQuantityStock(data.quantity);
+      setStock(data);
     };
 
     getSingleStockByWholesalerAndBeer();
@@ -93,8 +127,15 @@ function FormOrder(props) {
 
   const handleQuantityChange = (e) => {
     handleValueChange(e);
-    const quantity = Number(e.target.value);
-    calculateTotalPrice(quantity, beerPrice);
+
+    setFormData(prevData => {
+      return {
+        ...prevData, quantityRest: (stock.quantity - Number(e.target.value))
+      }
+    })
+
+    setFormErrors(validate(formData));
+
   };
 
   const handleWholesalerChanged = (e) => {
@@ -104,7 +145,9 @@ function FormOrder(props) {
 
     const getWholeSalerBeers = async (wholesalerID) => {
       if (wholesalerID !== 0) {
-        const data = await getWholesalerItsBeers(wholesalerID);
+        const data = await props.orderService.getWholesalerItsBeers(
+          wholesalerID
+        );
         //console.log("data: ", response);
         setBeerList(data);
       }
@@ -113,7 +156,7 @@ function FormOrder(props) {
     getWholeSalerBeers(id);
     setFormData((prevData) => ({ ...prevData, beerId: 0 }));
 
-    setQuantityStock(0);
+    setStock({});
     setBeerPrice(0);
   };
 
@@ -135,59 +178,15 @@ function FormOrder(props) {
     }));
   };
 
-  const validation = (fields) => {
-    const errors = {};
-    // console.log("fields: ", fields);
-
-    for (const [name, value] of Object.entries(fields)) {
-      // console.log("name:", name, ", value:", value);
-      switch (name) {
-        case "clientName":
-          if (!value) errors.ErrorValue = "The order cannot be empty";
-          break;
-        case "quantity":
-          if (value === 0) errors.ErrorQuantity = "The Quantity cannot be Zero";
-          break;
-        case "beerId":
-          if (value === 0) errors.ErrorBeer = "The Beer must exist";
-          break;
-        case "wholesalerId":
-          if (!value) errors.ErrorWholesaler = "The wholesaler must exist";
-          break;
-        default:
-          break;
-      }
-    }
-    return errors;
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setFormErrors(validation(formData));
+    setFormErrors(validate(formData));
     setIsSubmit(true);
-
-    // console.log("🚀 ~ file: FormOrder.jsx:157 ~ handleSubmit ~ isSubmit:", isSubmit)
-    if (Object.keys(formErrors).length > 0) return;
-
-    const requestOrder = async () => {
-      try {
-        const response = await postRequest(`orders`, formData);
-        console.log(response);
-        if (response.status === 201 || response.status === 204) {
-          navigate("/orders");
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    requestOrder();
-  };
-
-  // console.log("file: FormStock.jsx:89 ~ FormStock ~ formData:", formData);
+  }
 
   return (
     <div className="container mt-3">
-      {JSON.stringify(formData, undefined, 2)}
+      {/* {JSON.stringify(formData, undefined, 2)} */}
       <div className="row">
         <h1 className="text-center ">
           {props.isEditing ? "Edit Order" : "New Order"}
@@ -260,7 +259,7 @@ function FormOrder(props) {
               </li>
               <li>
                 <label htmlFor="name">Quantity in the Stock: &nbsp;</label>
-                <b>{quantityStock}</b>
+                <b>{stock.quantity}</b>
               </li>
             </ul>
           </div>
@@ -316,7 +315,7 @@ function FormOrder(props) {
             </button>
           </div>
           <div className="form-group mb-3">
-            {isSubmit && <FormErrors errors={formErrors} />}
+            {Object.keys(formErrors).length > 0 && <FormErrors errors={formErrors} />}
           </div>
         </form>
       </div>
