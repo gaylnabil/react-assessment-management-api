@@ -7,6 +7,7 @@ function BeersCreatePage() {
   const [ isEditing, setIsEditing ] = useState(false);
   const { id } = useParams();
 
+  // Sets the isEditing flag to true if there is an ID associated with this Beer
   useEffect(() => {
     setIsEditing(id !== undefined);
   }, [ id, isEditing ])

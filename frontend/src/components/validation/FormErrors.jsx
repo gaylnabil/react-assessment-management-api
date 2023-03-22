@@ -4,9 +4,6 @@ function FormErrors(props) {
   const errorElements = Object.entries(props.errors).map(
     ([ name, value ], index) => {
       return (
-        // <li key={index}>
-        //   {name}: {value}
-        // </li>
         <li key={index}>
           {value.message}
         </li>
