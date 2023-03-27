@@ -49,7 +49,7 @@ function FormStock(props) {
             const getStock = async () => {
                 const dataResult = await props.stockService.getStock(props.id);
                 console.log("dataResult: ", JSON.stringify(dataResult));
-                //console.log("dataResult: ", response);
+                console.log("dataResult: ", dataResult);
                 setData(dataResult);
                 for (const [ name, value ] of Object.entries(dataResult)) {
 
@@ -82,6 +82,8 @@ function FormStock(props) {
                 data.beerId
             );
 
+            console.log("data.wholesalerId:", data.wholesalerId);
+            console.log("data.beerId:", data.beerId);
             console.log("Single Stock:", stock);
 
 

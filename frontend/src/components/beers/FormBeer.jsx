@@ -33,35 +33,20 @@ function FormBeer(props) {
         if (props.isEditing) {
 
             const getBeer = async () => {
-                const response = await props.beerService.getBeer(props.beerId);
-                const data = await response.data;
+                const data = await props.beerService.getBeer(props.beerId);
                 console.log("data: ", JSON.stringify(data));
                 //console.log("data: ", response);
-                setFormData(prevData => {
-                    return { ...data }
-                })
+                setFormData(data);
             }
 
             getBeer();
         }
     }, [ props.isEditing, props.beerId, props.beerService ]);
 
-    // const optionsElement = breweries.map((brewery) => (
-    //     <option key={brewery.id} value={brewery.id} >{brewery.name}</option>
-    // ));
+    const optionsElement = breweries.map((brewery) => (
+        <option key={brewery.id} value={brewery.id} >{brewery.name}</option>
+    ));
     const handleValueChange = (event) => onValueChange(event, setFormData);
-
-    // const handleValueChange = (event) => {
-    //     setFormData(prevData => {
-    //         // const {name, type, value, checked} = event.target;
-    //         const { name, type, value } = event.target;
-    //         console.log([ name ], ":", type, ":", value);
-    //         return {
-    //             ...prevData,
-    //             [ name ]: type === 'number' ? Number(value) : value
-    //         }
-    //     });
-    // }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -161,7 +146,7 @@ function FormBeer(props) {
                             Company name
                         </label>
 
-                        <SelectTag
+                        {/* <SelectTag
 
                             id={'breweryId'}
                             name={'breweryId'}
@@ -172,8 +157,8 @@ function FormBeer(props) {
                             onChange={handleValueChange}
                             required={true}
 
-                        />
-                        {/* <select
+                        /> */}
+                        <select
                             value={formData.breweryId ? formData.breweryId : 0}
                             name="breweryId"
                             id="breweryId"
@@ -183,7 +168,7 @@ function FormBeer(props) {
                         >
                             <option value="">Choose Brewery</option>
                             {optionsElement}
-                        </select> */}
+                        </select>
                     </div>
                     <div className="form-group mb-3">
 
