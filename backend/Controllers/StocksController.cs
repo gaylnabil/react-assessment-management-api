@@ -58,7 +58,6 @@ namespace react_assessment_management_api.Controllers
                 return null;
             }
             var stock = await _context.Stocks.Where(s => s.WholesalerId == wholesalerId && s.BeerId == beerId).SingleOrDefaultAsync();
-            
             return stock;
         }
 

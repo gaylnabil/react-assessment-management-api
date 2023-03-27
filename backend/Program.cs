@@ -18,7 +18,7 @@ builder.Services.AddCors(options =>
         });
 });
 
-
+// ConnectionStringAssessement is in appsettings.json
 builder.Services.AddDbContext<AssessementDbContext>(
     options => options.UseSqlServer(builder.Configuration.GetConnectionString("ConnectionStringAssessment"))
     );
@@ -33,7 +33,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-// ConnectionStringAssessement is appsettings.json
+
 
 var app = builder.Build();
 

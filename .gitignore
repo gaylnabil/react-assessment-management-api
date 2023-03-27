@@ -270,3 +270,7 @@ backend/obj/Debug/net6.0/refint/react_assessment_management_api.dll
 backend/bin/Debug/net6.0/react_assessment_management_api.dll
 backend/obj/Debug/net6.0/project.razor.json
 backend/.vs/**
+backend/.vs/**/*.*
+backend/bin/Debug/**
+backend/obj/Debug/**
+backend/obj/**
