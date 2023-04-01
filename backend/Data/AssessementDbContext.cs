@@ -11,27 +11,27 @@ namespace react_assessment_management_api.Data
 
         }
 
-        public DbSet<Brewery>? Breweries { get; set; }
-        public DbSet<Beer>? Beers { get; set; }
+        public DbSet<Company>? Companies { get; set; }
+        public DbSet<Product>? Products { get; set; }
         public DbSet<Wholesaler>? Wholesalers { get; set; }
         public DbSet<Stock>? Stocks { get; set; }
         public DbSet<Order>? Orders { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Brewery>()
-                .HasMany(brw => brw.Beers)
-                .WithOne(beer => beer.Brewery);
+            modelBuilder.Entity<Company>()
+                .HasMany(c => c.Products)
+                .WithOne(product => product.Company);
 
             modelBuilder.Entity<Wholesaler>()
                 .HasMany(w => w.Stocks)
                 .WithOne(stock => stock.Wholesaler);
 
-            //modelBuilder.Entity<Stock>().HasKey(s => new { s.BeerId, s.WholesalerId });
+            //modelBuilder.Entity<Stock>().HasKey(s => new { s.ProductId, s.WholesalerId });
 
-            modelBuilder.Entity<Beer>()
+            modelBuilder.Entity<Product>()
                 .HasMany(b => b.Stocks)
-                .WithOne(stock => stock.Beer);
+                .WithOne(stock => stock.Product);
 
             modelBuilder.Entity<Stock>()
                 .HasOne(s => s.Wholesaler)
@@ -39,9 +39,9 @@ namespace react_assessment_management_api.Data
                 .HasForeignKey(s => s.WholesalerId);
 
             modelBuilder.Entity<Stock>()
-                .HasOne(s => s.Beer)
+                .HasOne(s => s.Product)
                 .WithMany(b => b.Stocks)
-                .HasForeignKey(s => s.BeerId);
+                .HasForeignKey(s => s.ProductId);
 
             modelBuilder.Entity<Order>()
               .HasOne(s => s.Wholesaler)
@@ -49,18 +49,18 @@ namespace react_assessment_management_api.Data
               .HasForeignKey(s => s.WholesalerId);
 
             modelBuilder.Entity<Order>()
-                .HasOne(s => s.Beer)
+                .HasOne(s => s.Product)
                 .WithMany(b => b.Orders)
-                .HasForeignKey(s => s.BeerId);
+                .HasForeignKey(s => s.ProductId);
         }
 
 
 
         //protected override void OnModelCreating(ModelBuilder modelBuilder)
         //{
-        //    modelBuilder.Entity<Beer>()
-        //        .HasOne(beer => beer.Brewery)
-        //        .WithMany(brw => brw.Beers);
+        //    modelBuilder.Entity<Product>()
+        //        .HasOne(Product => Product.Company)
+        //        .WithMany(brw => brw.Products);
         //}
     }
 }

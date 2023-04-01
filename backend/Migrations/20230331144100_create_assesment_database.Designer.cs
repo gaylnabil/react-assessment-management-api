@@ -11,8 +11,8 @@ using react_assessment_management_api.Data;
 namespace react_assessment_management_api.Migrations
 {
     [DbContext(typeof(AssessementDbContext))]
-    [Migration("20230322003729_create_tables_orders")]
-    partial class create_tables_orders
+    [Migration("20230331144100_create_assesment_database")]
+    partial class create_assesment_database
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,36 +23,7 @@ namespace react_assessment_management_api.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("react_assessment_management_api.Models.Beer", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int>("BreweryId")
-                        .HasColumnType("int");
-
-                    b.Property<float>("Content")
-                        .HasColumnType("real");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<float>("Price")
-                        .HasColumnType("real");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BreweryId");
-
-                    b.ToTable("Beers");
-                });
-
-            modelBuilder.Entity("react_assessment_management_api.Models.Brewery", b =>
+            modelBuilder.Entity("react_assessment_management_api.Models.Company", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -67,7 +38,7 @@ namespace react_assessment_management_api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Breweries");
+                    b.ToTable("Companies");
                 });
 
             modelBuilder.Entity("react_assessment_management_api.Models.Order", b =>
@@ -78,15 +49,15 @@ namespace react_assessment_management_api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("BeerId")
-                        .HasColumnType("int");
-
                     b.Property<string>("ClientName")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<int>("Discount")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
                         .HasColumnType("int");
 
                     b.Property<int>("Quantity")
@@ -100,11 +71,40 @@ namespace react_assessment_management_api.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BeerId");
+                    b.HasIndex("ProductId");
 
                     b.HasIndex("WholesalerId");
 
                     b.ToTable("Orders");
+                });
+
+            modelBuilder.Entity("react_assessment_management_api.Models.Product", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<float>("Price")
+                        .HasColumnType("real");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("react_assessment_management_api.Models.Stock", b =>
@@ -115,7 +115,7 @@ namespace react_assessment_management_api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("BeerId")
+                    b.Property<int>("ProductId")
                         .HasColumnType("int");
 
                     b.Property<int>("Quantity")
@@ -126,7 +126,7 @@ namespace react_assessment_management_api.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BeerId");
+                    b.HasIndex("ProductId");
 
                     b.HasIndex("WholesalerId");
 
@@ -151,22 +151,11 @@ namespace react_assessment_management_api.Migrations
                     b.ToTable("Wholesalers");
                 });
 
-            modelBuilder.Entity("react_assessment_management_api.Models.Beer", b =>
-                {
-                    b.HasOne("react_assessment_management_api.Models.Brewery", "Brewery")
-                        .WithMany("Beers")
-                        .HasForeignKey("BreweryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Brewery");
-                });
-
             modelBuilder.Entity("react_assessment_management_api.Models.Order", b =>
                 {
-                    b.HasOne("react_assessment_management_api.Models.Beer", "Beer")
+                    b.HasOne("react_assessment_management_api.Models.Product", "Product")
                         .WithMany("Orders")
-                        .HasForeignKey("BeerId")
+                        .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -176,16 +165,27 @@ namespace react_assessment_management_api.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Beer");
+                    b.Navigation("Product");
 
                     b.Navigation("Wholesaler");
+                });
+
+            modelBuilder.Entity("react_assessment_management_api.Models.Product", b =>
+                {
+                    b.HasOne("react_assessment_management_api.Models.Company", "Company")
+                        .WithMany("Products")
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
                 });
 
             modelBuilder.Entity("react_assessment_management_api.Models.Stock", b =>
                 {
-                    b.HasOne("react_assessment_management_api.Models.Beer", "Beer")
+                    b.HasOne("react_assessment_management_api.Models.Product", "Product")
                         .WithMany("Stocks")
-                        .HasForeignKey("BeerId")
+                        .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -195,21 +195,21 @@ namespace react_assessment_management_api.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Beer");
+                    b.Navigation("Product");
 
                     b.Navigation("Wholesaler");
                 });
 
-            modelBuilder.Entity("react_assessment_management_api.Models.Beer", b =>
+            modelBuilder.Entity("react_assessment_management_api.Models.Company", b =>
+                {
+                    b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("react_assessment_management_api.Models.Product", b =>
                 {
                     b.Navigation("Orders");
 
                     b.Navigation("Stocks");
-                });
-
-            modelBuilder.Entity("react_assessment_management_api.Models.Brewery", b =>
-                {
-                    b.Navigation("Beers");
                 });
 
             modelBuilder.Entity("react_assessment_management_api.Models.Wholesaler", b =>

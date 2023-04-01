@@ -9,7 +9,7 @@ function WholesalerList(props) {
   useEffect(() => {
     // Gets Wholesalers and their stocks from the wholesaler service and adds them to the query
     const getWholesalers = async () => {
-      // url = "wholesalers/stocks/beers";
+      // url = "wholesalers/stocks/products";
       const data = await props.wholesalerService.getWholesalersTheirStocks();
       setWholesalerList(data);
     };

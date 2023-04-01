@@ -26,12 +26,12 @@ class WholesalerService {
   }
 
   async getWholesalersTheirStocks() {
-    return await this.getWholesalersWith("wholesalers", "stocks", "beers");
+    return await this.getWholesalersWith("wholesalers", "stocks", "products");
   }
 
-  // url = wholesalers/${id}/beers
-  async getWholesalerItsBeers(id) {
-    return await this.getWholesalersWith("wholesalers", id, "beers");
+  // url = wholesalers/${id}/products
+  async getWholesalerItsProducts(id) {
+    return await this.getWholesalersWith("wholesalers", id, "products");
   }
 
   async getWholesalersWith(...args) {

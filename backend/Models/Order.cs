@@ -12,7 +12,8 @@ namespace react_assessment_management_api.Models
         public int Id { get; set; }
 
         [StringLength(100)]
-        public string ClientName { get; set; }
+        [Required]
+        public string ClientName { get; set; } = "";
 
         [Required]
         [DisplayName("Quantity")]
@@ -25,10 +26,10 @@ namespace react_assessment_management_api.Models
         [Range(0, 9999999)]
         public float TotalPrice { get; set; } = 0;
 
-        [ForeignKey(name: "BeerId")]
-        public int BeerId { get; set; }
+        [ForeignKey(name: "ProductId")]
+        public int ProductId { get; set; }
 
-        public Beer? Beer { get; set; }
+        public Product? Product { get; set; }
 
         [ForeignKey(name: "WholesalerId")]
         public int WholesalerId { get; set; }

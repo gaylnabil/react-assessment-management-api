@@ -7,7 +7,7 @@ function OrderList(props) {
 
   // Gets the order list from the service and stores it in the config.
   const getOrders = async () => {
-    const data = await props.orderService.getOrdersWithWholesalersAndBeers();
+    const data = await props.orderService.getOrdersWithWholesalersAndProducts();
     console.log("getOrderList:", data);
     setOrderList(data);
   };
@@ -24,7 +24,7 @@ function OrderList(props) {
             <th className="w-25" scope="col">
               Client Name
             </th>
-            <th scope="col">Beer</th>
+            <th scope="col">Product</th>
             <th scope="col">Wholesaler</th>
             <th scope="col">Quantity </th>
             <th scope="col">Discount</th>
@@ -37,7 +37,7 @@ function OrderList(props) {
             return (
               <tr key={order.id}>
                 <th scope="row">{order.clientName}</th>
-                <th scope="row">{order.beer.name}</th>
+                <th scope="row">{order.product.name}</th>
                 <td>{order.wholesaler.name}</td>
                 <th scope="row">{order.quantity}</th>
                 <td>

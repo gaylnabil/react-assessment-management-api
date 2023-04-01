@@ -49,26 +49,26 @@ namespace react_assessment_management_api.Controllers
             return stock;
         }
 
-        // GET: api/Stocks/Wholesaler/5/Beers/2
-        [HttpGet("Wholesalers/{wholesalerId}/Beers/{beerId}")]
-        public async Task<ActionResult<Stock>?> GetStockByWholesalerAndBeer(int wholesalerId, int beerId)
+        // GET: api/Stocks/Wholesaler/5/Products/2
+        [HttpGet("Wholesalers/{wholesalerId}/Products/{productId}")]
+        public async Task<ActionResult<Stock>?> GetStockByWholesalerAndProduct(int wholesalerId, int productId)
         {
             if (_context.Stocks == null)
             {
                 return null;
             }
-            var stock = await _context.Stocks.Where(s => s.WholesalerId == wholesalerId && s.BeerId == beerId).SingleOrDefaultAsync();
+            var stock = await _context.Stocks.Where(s => s.WholesalerId == wholesalerId && s.ProductId == productId).SingleOrDefaultAsync();
             return stock;
         }
 
-        //[HttpGet("Wholesalers/{wholesalerId}/Beers/{beerId}/Quantities")]
-        //public async Task<ActionResult<int>> GetQuantityStockByWholesalerAndBeer(int wholesalerId, int beerId)
+        //[HttpGet("Wholesalers/{wholesalerId}/Products/{ProductId}/Quantities")]
+        //public async Task<ActionResult<int>> GetQuantityStockByWholesalerAndProduct(int wholesalerId, int ProductId)
         //{
         //    if (_context.Stocks == null)
         //    {
         //        return 0;
         //    }
-        //    var stock = await _context.Stocks.Where(s => s.WholesalerId == wholesalerId && s.BeerId == beerId).SingleOrDefaultAsync();
+        //    var stock = await _context.Stocks.Where(s => s.WholesalerId == wholesalerId && s.ProductId == ProductId).SingleOrDefaultAsync();
 
         //    if (stock == null)
         //    {

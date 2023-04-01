@@ -25,25 +25,25 @@ class StockService {
     return await this.service.delete("stocks", id);
   }
 
-  // GET: `api/stocks/wholesalers/${wId}/beers/${bId}`
-  async getStockByWholesalerAndBeer(wholesalerId, beerId) {
+  // GET: `api/stocks/wholesalers/${wId}/products/${bId}`
+  async getStockByWholesalerAndProduct(wholesalerId, productId) {
     return await this.getStocksWith(
       "stocks",
       "wholesalers",
       wholesalerId,
-      "beers",
-      beerId
+      "products",
+      productId
     );
   }
 
-  // // GET: `api/stocks/wholesalers/{wholesalerId}/beers/{beerId}/quantities` return Quantity
-  // async getQuantityStockByWholesalerAndBeer(wholesalerId, beerId) {
+  // // GET: `api/stocks/wholesalers/{wholesalerId}/products/{productId}/quantities` return Quantity
+  // async getQuantityStockByWholesalerAndProduct(wholesalerId, productId) {
   //   return await this.getStocksWith(
   //     "stocks",
   //     "wholesalers",
   //     wholesalerId,
-  //     "beers",
-  //     beerId,
+  //     "products",
+  //     productId,
   //     "quantities"
   //   );
   // }

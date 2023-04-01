@@ -29,15 +29,15 @@ namespace react_assessment_management_api.Controllers
             }
             return await _context.Orders.ToListAsync();
         }
-        // GET: api/Orders/Wholesalers/Beers
-        [HttpGet("Wholesalers/Beers")]
-        public async Task<ActionResult<IEnumerable<Order>>> GetOrdersJoinWholesalersBeers()
+        // GET: api/Orders/Wholesalers/Products
+        [HttpGet("Wholesalers/Products")]
+        public async Task<ActionResult<IEnumerable<Order>>> GetOrdersJoinWholesalersProducts()
         {
             if (_context.Orders == null)
             {
                 return NotFound();
             }
-            return await _context.Orders.Include(order => order.Wholesaler).Include(order => order.Beer).ToListAsync();
+            return await _context.Orders.Include(order => order.Wholesaler).Include(order => order.Product).ToListAsync();
         }
 
         // GET: api/Orders/5

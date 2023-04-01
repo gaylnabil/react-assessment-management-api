@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace react_assessment_management_api.Models
 {
-    public class Beer
+    public class Product
     {
         [Key]
         [DisplayName("ID")]
@@ -16,17 +16,17 @@ namespace react_assessment_management_api.Models
         [StringLength(100)]
         public string? Name { get; set; }
 
-        [Range(0, 100)]
-        public float Content { get; set; }
+        [Column(TypeName = "text")]
+        public string? Description { get; set; }
 
         [Range(0, 9999999)]
         public float Price { get; set; }
 
 
-        [ForeignKey(name: "BreweryId")]
-        public int BreweryId { get; set; }
+        [ForeignKey(name: "CompanyId")]
+        public int CompanyId { get; set; }
 
-        public Brewery? Brewery { get; set; }
+        public Company? Company { get; set; }
 
         public ICollection<Stock>? Stocks { get; set; }
         public ICollection<Order>? Orders { get; set; }

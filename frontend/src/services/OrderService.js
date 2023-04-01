@@ -26,20 +26,20 @@ class OrderService {
     return await this.service.delete("orders", id);
   }
 
-  // url: GET api/orders/wholesalers/beers
-  async getOrdersWithWholesalersAndBeers() {
-    return await this.getOrdersWith("orders", "wholesalers", "beers");
+  // url: GET api/orders/wholesalers/products
+  async getOrdersWithWholesalersAndProducts() {
+    return await this.getOrdersWith("orders", "wholesalers", "products");
   }
 
-  // url = api/wholesalers/${id}/beers
-  async getWholesalerItsBeers(wholesalerId) {
-    return await new WholesalerService().getWholesalerItsBeers(wholesalerId);
+  // url = api/wholesalers/${id}/products
+  async getWholesalerItsProducts(wholesalerId) {
+    return await new WholesalerService().getWholesalerItsProducts(wholesalerId);
   }
 
-  async getStockByWholesalerAndBeer(wholesalerId, beerId) {
-    return await new StockService().getStockByWholesalerAndBeer(
+  async getStockByWholesalerAndProduct(wholesalerId, productId) {
+    return await new StockService().getStockByWholesalerAndProduct(
       wholesalerId,
-      beerId
+      productId
     );
   }
 
