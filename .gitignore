@@ -256,8 +256,10 @@ _Pvt_Extensions
 .paket/paket.exe
 
 # FAKE - F# Make
-.fake/
-backend/.vs/
-backend/bin/
-backend/obj/Debug/
-backend/bin/Debug/
+.fake
+backend/.vs
+backend/bin
+backend/obj/Debug
+backend/bin/Debug
+**/bin
+**/obj
