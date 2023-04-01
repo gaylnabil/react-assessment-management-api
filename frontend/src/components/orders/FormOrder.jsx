@@ -14,9 +14,9 @@ function FormOrder(props) {
     totalPrice: 0,
     quantityRest: 0,
   });
-  const [ beerList, setBeerList ] = useState([]);
+  const [ productList, setProductList ] = useState([]);
   const [ wholesalerList, setWholesalerList ] = useState([]);
-  const [ beerPrice, setBeerPrice ] = useState(0);
+  const [ productPrice, setProductPrice ] = useState(0);
   const [ stock, setStock ] = useState({
     quantity: 0,
   });
@@ -26,7 +26,7 @@ function FormOrder(props) {
       quantity: 0,
       discount: 0,
       totalPrice: 0,
-      beerId: 0,
+      productId: 0,
       wholesalerId: 0,
     }
   });
@@ -68,39 +68,39 @@ function FormOrder(props) {
 
 
     }
-    calculateTotalPrice(getValues("quantity"), beerPrice);
+    calculateTotalPrice(getValues("quantity"), productPrice);
 
-  }, [ getValues, setValue, beerPrice ]);
+  }, [ getValues, setValue, productPrice ]);
 
   const handleValueChange = (e) => {
     const { name, value } = e.target;
     console.log("[name, value]:", name, ",", value);
     setValue(name, value);
     switch (name) {
-      case 'beerId':
+      case 'productId':
 
-        const beerId = Number(value);
+        const productId = Number(value);
 
-        const beer = beerList.find((beer) => {
-          return beer.id === beerId;
+        const product = productList.find((product) => {
+          return product.id === productId;
         });
 
-        const price = beer ? beer.price : 0;
+        const price = product ? product.price : 0;
 
-        setBeerPrice(price);
+        setProductPrice(price);
 
-        const getSingleStockByWholesalerAndBeer = async () => {
-          const data = await props.orderService.getStockByWholesalerAndBeer(
+        const getSingleStockByWholesalerAndProduct = async () => {
+          const data = await props.orderService.getStockByWholesalerAndProduct(
             getValues("wholesalerId"),
-            beerId
+            productId
           );
 
           console.log("Single Stock:", data);
 
           setStock(data);
         };
-        console.log("BeerId:", value);
-        getSingleStockByWholesalerAndBeer();
+        console.log("productId:", value);
+        getSingleStockByWholesalerAndProduct();
         break;
 
       case 'quantity':
@@ -129,26 +129,26 @@ function FormOrder(props) {
 
 
         }
-        calculateTotalPrice(Number(value), beerPrice);
+        calculateTotalPrice(Number(value), productPrice);
 
         break;
       case 'wholesalerId':
         const id = Number(value);
 
-        const getWholeSalerBeers = async (wholesalerID) => {
+        const getWholeSalerProducts = async (wholesalerID) => {
           if (wholesalerID !== 0) {
-            const dataResult = await props.orderService.getWholesalerItsBeers(
+            const dataResult = await props.orderService.getWholesalerItsProducts(
               wholesalerID
             );
-            setBeerList(dataResult);
+            setProductList(dataResult);
           }
         };
 
-        getWholeSalerBeers(id);
-        setValue('beerId', '');
+        getWholeSalerProducts(id);
+        setValue('productId', '');
 
         setStock({});
-        setBeerPrice(0);
+        setProductPrice(0);
         break;
       default:
         break;
@@ -228,20 +228,20 @@ function FormOrder(props) {
             )}
           </div>
           <div className="form-group mb-3 ">
-            <label htmlFor="name">Beer Name:</label>
+            <label htmlFor="name">Product Name:</label>
             {props.isEditing ? (
-              <b> {props.beerName}</b>
+              <b> {props.productName}</b>
             ) : (
               <SelectTag
-                id={"beerId"}
+                id={"productId"}
                 register={
-                  register("beerId", {
-                    required: 'The Beer ust be exist.',
+                  register("productId", {
+                    required: 'The Product ust be exist.',
                     onChange: handleValueChange
                   })}
-                label={"Select Beers"}
-                defaultValue={"Choose Beer"}
-                list={beerList}
+                label={"Select Products"}
+                defaultValue={"Choose Product"}
+                list={productList}
               />
             )}
           </div>
@@ -249,9 +249,9 @@ function FormOrder(props) {
           <div className="input-group mb-3 ">
             <ul>
               <li>
-                <label htmlFor="name">Beer Price: &nbsp;</label>
+                <label htmlFor="name">Product Price: &nbsp;</label>
                 <b>
-                  {beerPrice.toLocaleString("en-US", {
+                  {productPrice.toLocaleString("en-US", {
                     style: "currency",
                     currency: "USD",
                     maximumFractionDigits: 2,
@@ -284,7 +284,7 @@ function FormOrder(props) {
                 validate: {
                   quantityLessThanStock: (value) => {
                     //console.log("value:", value);
-                    return (stock && value <= stock.quantity) || "The number of beers ordered cannot be greater than the wholesaler's stock.";
+                    return (stock && value <= stock.quantity) || "The number of products ordered cannot be greater than the wholesaler's stock.";
                   }
                 },
               })}

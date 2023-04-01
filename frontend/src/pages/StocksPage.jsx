@@ -15,7 +15,7 @@ function StockEditPage() {
             <h1>Stock id: {id}</h1>
             <FormStock
                 id={id}
-                beerName={state.beerName}
+                productName={state.productName}
                 wholesalerName={state.wholesalerName}
                 isEditing={state.isEditing}
                 stockService={stockService}

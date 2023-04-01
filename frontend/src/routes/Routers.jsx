@@ -1,22 +1,22 @@
 import React from 'react'
 import { Routes, Route } from 'react-router-dom';
-import BreweriesPage from '../pages/BreweriesPage';
+import CompaniesPage from '../pages/CompaniesPage';
 import WholesalersPage from '../pages/WholesalersPage';
-import BeersCreatePage from '../pages/BeersCreatePage';
+import ProductsCreatePage from '../pages/ProductsCreatePage';
 import WholesalersCreatePage from '../pages/WholesalersCreatePage';
 import StocksPage from '../pages/StocksPage';
 import OrdersPage from '../pages/OrdersPage';
 import OrderCreatePage from '../pages/OrderCreatePage';
-// import FormBeer from '../components/Beers/FormBeer';
+// import FormProduct from '../components/Products/FormProduct';
 function Routers() {
     return (
         <Routes>
 
-            <Route path='/' element={<BreweriesPage />} />
-            <Route path='breweries' element={<BreweriesPage />} />
-            <Route path='beers' >
-                <Route path='new' element={<BeersCreatePage />} />
-                <Route path=':id/edit/' element={<BeersCreatePage />} />
+            <Route path='/' element={<CompaniesPage />} />
+            <Route path='companies' element={<CompaniesPage />} />
+            <Route path='products' >
+                <Route path='new' element={<ProductsCreatePage />} />
+                <Route path=':id/edit/' element={<ProductsCreatePage />} />
             </Route>
             <Route path='wholesalers' element={<WholesalersPage />} />
             <Route path='wholesalers' >

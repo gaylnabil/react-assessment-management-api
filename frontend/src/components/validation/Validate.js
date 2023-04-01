@@ -14,8 +14,8 @@ const validate = (fields) => {
       case "quantity":
         if (value === 0) errors.ErrorQuantity = "The Quantity cannot be Zero.";
         break;
-      case "beerId":
-        if (value === 0) errors.ErrorBeer = "The Beer must exist.";
+      case "productId":
+        if (value === 0) errors.ErrorProduct = "The Product must exist.";
         break;
       case "wholesalerId":
         if (!value) errors.ErrorWholesaler = "The wholesaler must select one.";
@@ -23,7 +23,7 @@ const validate = (fields) => {
       case "quantityRest":
         if (value < 0)
           errors.quantityRest =
-            "The number of beers ordered cannot be greater than the wholesaler's stock.";
+            "The number of products ordered cannot be greater than the wholesaler's stock.";
         break;
       default:
         break;

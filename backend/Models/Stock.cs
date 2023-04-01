@@ -16,9 +16,9 @@ namespace react_assessment_management_api.Models
         [Range(0, 9999999)]
         public int Quantity { get; set; }
 
-        [ForeignKey(name: "BeerId")]
-        public int BeerId { get; set; }
-        public Beer? Beer { get; set; }
+        [ForeignKey(name: "ProductId")]
+        public int ProductId { get; set; }
+        public Product? Product { get; set; }
 
         [ForeignKey(name: "WholesalerId")]
         public int WholesalerId { get; set; }

@@ -10,55 +10,55 @@ namespace react_assessment_management_api.Controllers
     [EnableCors()]
     [Route("api/[controller]")]
     [ApiController]
-    public class BeersController : ControllerBase
+    public class ProductsController : ControllerBase
     {
         private readonly AssessementDbContext _context;
 
-        public BeersController(AssessementDbContext context)
+        public ProductsController(AssessementDbContext context)
         {
             _context = context;
         }
 
-        // GET: api/Beers
+        // GET: api/Products
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Beer>>> GetBeers()
+        public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
         {
-            if (_context.Beers == null)
+            if (_context.Products == null)
             {
                 return NotFound();
             }
-            return await _context.Beers.ToListAsync();
+            return await _context.Products.ToListAsync();
         }
 
-        // GET: api/Beers/5
+        // GET: api/Products/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Beer>> GetBeer(int id)
+        public async Task<ActionResult<Product>> GetProduct(int id)
         {
-            if (_context.Beers == null)
+            if (_context.Products == null)
             {
                 return NotFound();
             }
-            var beer = await _context.Beers.FindAsync(id);
+            var product = await _context.Products.FindAsync(id);
 
-            if (beer == null)
+            if (product == null)
             {
                 return NotFound();
             }
 
-            return beer;
+            return product;
         }
 
-        // PUT: api/Beers/5
+        // PUT: api/Products/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutBeer(int id, Beer beer)
+        public async Task<IActionResult> PutProduct(int id, Product product)
         {
-            if (id != beer.Id)
+            if (id != product.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(beer).State = EntityState.Modified;
+            _context.Entry(product).State = EntityState.Modified;
 
             try
             {
@@ -66,7 +66,7 @@ namespace react_assessment_management_api.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!BeerExists(id))
+                if (!ProductExists(id))
                 {
                     return NotFound();
                 }
@@ -79,44 +79,44 @@ namespace react_assessment_management_api.Controllers
             return NoContent();
         }
 
-        // POST: api/Beers
+        // POST: api/Products
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Beer>> PostBeer(Beer beer)
+        public async Task<ActionResult<Product>> PostProduct(Product product)
         {
-            if (_context.Beers == null)
+            if (_context.Products == null)
             {
-                return Problem("Entity set 'AssessementDbContext.Beers'  is null.");
+                return Problem("Entity set 'AssessementDbContext.Products'  is null.");
             }
-            _context.Beers.Add(beer);
+            _context.Products.Add(product);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetBeer", new { id = beer.Id }, beer);
+            return CreatedAtAction("GetProduct", new { id = product.Id }, product);
         }
 
-        // DELETE: api/Beers/5
+        // DELETE: api/Products/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteBeer(int id)
+        public async Task<IActionResult> DeleteProduct(int id)
         {
-            if (_context.Beers == null)
+            if (_context.Products == null)
             {
                 return NotFound();
             }
-            var beer = await _context.Beers.FindAsync(id);
-            if (beer == null)
+            var product = await _context.Products.FindAsync(id);
+            if (product == null)
             {
                 return NotFound();
             }
 
-            _context.Beers.Remove(beer);
+            _context.Products.Remove(product);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool BeerExists(int id)
+        private bool ProductExists(int id)
         {
-            return (_context.Beers?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.Products?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace react_assessment_management_api.Models
 {
-    public class Brewery
+    public class Company
     {
         [Key]
         [DisplayName("ID")]
@@ -16,7 +16,7 @@ namespace react_assessment_management_api.Models
         [StringLength(100)]
         public string? Name { get; set; }
 
-        public ICollection<Beer>? Beers { get; set; }
+        public ICollection<Product>? Products { get; set; }
 
     }
 }

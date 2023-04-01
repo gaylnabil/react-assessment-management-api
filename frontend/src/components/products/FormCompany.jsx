@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { postRequest } from '../../apis/api';
-import onValueChange from './../Events/ValueChangeEvent';
+import onValueChange from '../Events/ValueChangeEvent';
 
-function FormBrewery() {
+function FormCompany() {
 
     const [ formData, setFormData ] = useState({
         name: "",
@@ -26,9 +26,9 @@ function FormBrewery() {
         e.preventDefault();
         console.log("handleSubmit", formData);
 
-        const addBeer = async () => {
+        const addProduct = async () => {
             try {
-                const response = await postRequest('breweries', formData)
+                const response = await postRequest('companies', formData)
                 console.log(response);
             } catch (error) {
                 console.log(error);
@@ -36,13 +36,13 @@ function FormBrewery() {
 
         }
 
-        addBeer();
+        addProduct();
 
     }
     return (
         <div className="container mt-3">
             <div>
-                <h1>Add information of Brewery</h1>
+                <h1>Add information of Company</h1>
                 <form onSubmit={handleSubmit}>
                     <div className="form-group mb-3">
                         <label
@@ -57,7 +57,7 @@ function FormBrewery() {
                             name="name"
                             value={formData.name}
                             onChange={handleValueChange}
-                            placeholder="Enter Brewery's Name..."
+                            placeholder="Enter Company's Name..."
                         />
                     </div>
 
@@ -67,7 +67,7 @@ function FormBrewery() {
                             type="submit"
                             className="btn btn-primary"
                         >
-                            New Brewery
+                            New Company
                         </button>
                     </div>
                 </form>
@@ -76,4 +76,4 @@ function FormBrewery() {
     )
 }
 
-export default FormBrewery;
+export default FormCompany;

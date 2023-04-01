@@ -41,16 +41,16 @@ namespace react_assessment_management_api.Controllers
             return await _context.Wholesalers.Include(w => w.Stocks).ToListAsync();
         }
 
-        // GET: api/Wholesalers/Stocks/Beers
-        [HttpGet("Stocks/Beers")]
-        public async Task<ActionResult<IEnumerable<Wholesaler>>> GetWholesalersStocksBeer()
+        // GET: api/Wholesalers/Stocks/Products
+        [HttpGet("Stocks/Products")]
+        public async Task<ActionResult<IEnumerable<Wholesaler>>> GetWholesalersStocksProduct()
         {
             if (_context.Wholesalers == null)
             {
                 return NotFound();
             }
             return await _context.Wholesalers.Include(w => w.Stocks)
-                                             .ThenInclude(s => s.Beer)
+                                             .ThenInclude(s => s.Product)
                                              .ToListAsync();
         }
 
@@ -94,18 +94,18 @@ namespace react_assessment_management_api.Controllers
 
             return wholesaler;
         }
-        // GET: api/Wholesalers/5/Stocks/Beers
-        [HttpGet("{id}/Stocks/Beers")]
-        public async Task<ActionResult<Wholesaler>> GetWholesalerWithStocksAndBeers(int id)
+        // GET: api/Wholesalers/5/Stocks/Products
+        [HttpGet("{id}/Stocks/Products")]
+        public async Task<ActionResult<Wholesaler>> GetWholesalerWithStocksAndProducts(int id)
         {
             if (_context.Wholesalers == null)
             {
                 return NotFound();
             }
             var wholesaler = await _context.Wholesalers.Where(w => w.Id == id)
-                                                       .Include(w => w.Stocks)
-                                                       .ThenInclude(s => s.Beer)
-                                                       .SingleOrDefaultAsync();
+                                                               .Include(w => w.Stocks)
+                                                               .ThenInclude(s => s.Product)
+                                                               .SingleOrDefaultAsync();
 
 
             if (wholesaler == null)
@@ -116,22 +116,22 @@ namespace react_assessment_management_api.Controllers
             return wholesaler;
         }
 
-        // GET: api/Wholesalers/5/Beers
-        [HttpGet("{id}/Beers")]
-        public async Task<ActionResult<IEnumerable<Beer>>> GetWholesalerWithBeers(int id)
+        // GET: api/Wholesalers/5/Products
+        [HttpGet("{id}/Products")]
+        public async Task<ActionResult<IEnumerable<Product>>?> GetWholesalerWithProducts(int id)
         {
-            if (_context.Beers == null)
+            if (_context.Products == null)
             {
                 return null;
             }
-            var beer = await _context.Beers.Where(b => b.Stocks.Any(s => s.WholesalerId == id)).ToListAsync();
+            var product = await _context.Products.Where(b => b.Stocks.Any(s => s.WholesalerId == id)).ToListAsync();
                                           
-            if (beer == null)
+            if (product == null)
             {
                 return null;
             }
 
-            return beer;
+            return product;
         }
 
         // PUT: api/Wholesalers/5

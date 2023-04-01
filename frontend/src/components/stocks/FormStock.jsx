@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import SelectTag from "../inputs/SelectTag";
 import WholesalerService from "../../services/WholesalerService";
-import BeerService from './../../services/BeerService';
+import ProductService from './../../services/ProductService';
 import FormErrors from "./../validation/FormErrors";
 import { useForm } from "react-hook-form";
 
@@ -17,8 +17,8 @@ function FormStock(props) {
     const navigate = useNavigate();
     const [ data, setData ] = useState({
         quantity: 0,
-        beerId: 0,
-        beer: null,
+        productId: 0,
+        product: null,
         wholesalerId: 0,
         wholesaler: null
     });
@@ -27,8 +27,8 @@ function FormStock(props) {
     const { register, handleSubmit, formState: { errors }, setValue } = useForm({
         defaultValues: {
             quantity: 0,
-            beerId: 0,
-            beer: null,
+            productId: 0,
+            product: null,
             wholesalerId: 0,
             wholesaler: null
         }
@@ -36,7 +36,7 @@ function FormStock(props) {
     console.log("file: FormStock.jsx:37 ~ errors:", errors)
 
 
-    const [ beerList, setBeerList ] = useState([]);
+    const [ productList, setProductList ] = useState([]);
     const [ wholesalerList, setWholesalerList ] = useState([]);
     const [ stock, setStock ] = useState({
         quantity: 0,
@@ -63,8 +63,8 @@ function FormStock(props) {
                 let dataResult = await new WholesalerService().getAllWholesalers();
                 setWholesalerList(dataResult);
 
-                dataResult = await new BeerService().getAllBeers();
-                setBeerList(dataResult);
+                dataResult = await new ProductService().getAllProducts();
+                setProductList(dataResult);
             }
 
             GetList();
@@ -73,26 +73,26 @@ function FormStock(props) {
 
     useEffect(() => {
 
-        if (data.wholesalerId === 0 || data.beerId === 0) return;
+        if (data.wholesalerId === 0 || data.productId === 0) return;
 
-        // Gets the stock by wholesaler and beer. If there is no stock returns 0
-        const getStockByWholesalerAndBeer = async () => {
-            const stock = await props.stockService.getStockByWholesalerAndBeer(
+        // Gets the stock by wholesaler and product. If there is no stock returns 0
+        const getStockByWholesalerAndProduct = async () => {
+            const stock = await props.stockService.getStockByWholesalerAndProduct(
                 data.wholesalerId,
-                data.beerId
+                data.productId
             );
 
             console.log("data.wholesalerId:", data.wholesalerId);
-            console.log("data.beerId:", data.beerId);
+            console.log("data.productId:", data.productId);
             console.log("Single Stock:", stock);
 
 
             setStock(stock ? stock : { quantity: 0 });
         }
 
-        getStockByWholesalerAndBeer();
+        getStockByWholesalerAndProduct();
 
-    }, [ data.wholesalerId, data.beerId, props.stockService ]);
+    }, [ data.wholesalerId, data.productId, props.stockService ]);
 
 
     useEffect(() => {
@@ -145,7 +145,7 @@ function FormStock(props) {
 
     // console.log("file: FormStock.jsx:89 ~ FormStock ~ formData:", formData);
     // console.log("file: FormStock.jsx:89 ~ FormStock ~ wholesalerList:", wholesalerList);
-    // console.log("file: FormStock.jsx:90 ~ FormStock ~ beerList:", beerList);
+    // console.log("file: FormStock.jsx:90 ~ FormStock ~ productList:", productList);
 
     return (
         <div className="container mt-3">
@@ -155,20 +155,20 @@ function FormStock(props) {
                 </h1>
                 <form onSubmit={handleSubmit(onSubmit)} className="col-sm-5 offset-4 center-block">
                     <div className="form-group mb-3 ">
-                        <label htmlFor="name">Beer Name:</label>
+                        <label htmlFor="name">Product Name:</label>
                         {props.isEditing ? (
-                            <b> {props.beerName}</b>
+                            <b> {props.productName}</b>
                         ) : (
                             <SelectTag
-                                id={"beerId"}
+                                id={"productId"}
                                 register={
-                                    register("beerId", {
-                                        required: 'The Beer ust be exist.',
+                                    register("productId", {
+                                        required: 'The Product ust be exist.',
                                         onChange: handleValueChange
                                     })}
-                                label={"Select Beers"}
-                                defaultValue={"Choose Beer"}
-                                list={beerList}
+                                label={"Select Products"}
+                                defaultValue={"Choose Product"}
+                                list={productList}
                             />
                         )}
                     </div>

@@ -1,50 +1,50 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import SelectTag from '../inputs/SelectTag';
-import onValueChange from './../Events/ValueChangeEvent';
-import BreweryService from './../../services/BreweryService';
+// import SelectTag from '../inputs/SelectTag';
+import onValueChange from '../Events/ValueChangeEvent';
+import CompanyService from './../../services/CompanyService';
 
-function FormBeer(props) {
+function FormProduct(props) {
 
     const navigate = useNavigate();
-    const [ breweries, setBreweries ] = useState([]);
+    const [ companies, setCompanies ] = useState([]);
 
 
     const [ formData, setFormData ] = useState({
         name: "",
-        content: 1,
+        description: 1,
         price: 0,
-        breweryId: null,
+        companyId: null,
 
     });
 
     useEffect(() => {
-        const breweriesFindAll = async () => {
-            const data = await new BreweryService().getAllBreweries();
+        const companiesFindAll = async () => {
+            const data = await new CompanyService().getAllCompanies();
             //console.log("data: ", JSON.stringify(data));
             //console.log("data: ", response);
-            setBreweries(data);
+            setCompanies(data);
         };
 
-        breweriesFindAll();
+        companiesFindAll();
     }, []);
 
     useEffect(() => {
         if (props.isEditing) {
 
-            const getBeer = async () => {
-                const data = await props.beerService.getBeer(props.beerId);
+            const getProduct = async () => {
+                const data = await props.productService.getProduct(props.productId);
                 console.log("data: ", JSON.stringify(data));
                 //console.log("data: ", response);
                 setFormData(data);
             }
 
-            getBeer();
+            getProduct();
         }
-    }, [ props.isEditing, props.beerId, props.beerService ]);
+    }, [ props.isEditing, props.productId, props.productService ]);
 
-    const optionsElement = breweries.map((brewery) => (
-        <option key={brewery.id} value={brewery.id} >{brewery.name}</option>
+    const optionsElement = companies.map((company) => (
+        <option key={company.id} value={company.id} >{company.name}</option>
     ));
     const handleValueChange = (event) => onValueChange(event, setFormData);
 
@@ -52,19 +52,19 @@ function FormBeer(props) {
         e.preventDefault();
         console.log("handleSubmit", formData);
 
-        const requestBeer = async () => {
+        const requestProduct = async () => {
             try {
                 let response = null;
 
                 if (props.isEditing) {
-                    response = await props.beerService.updateBeer(props.beerId, formData)
+                    response = await props.productService.updateProduct(props.productId, formData)
                 } else {
 
-                    response = await props.beerService.addBeer(formData)
+                    response = await props.productService.addProduct(formData)
                 }
                 console.log(response);
                 if (response.status === 201 || response.status === 204) {
-                    navigate("/breweries");
+                    navigate("/companies");
                 }
             } catch (error) {
                 console.log(error);
@@ -72,7 +72,7 @@ function FormBeer(props) {
 
         }
 
-        requestBeer();
+        requestProduct();
     }
     //console.log("formData: ", formData);
 
@@ -80,7 +80,7 @@ function FormBeer(props) {
     return (
         <div className="container mt-3">
             <div>
-                <h1>{props.isEditing ? "Edit Beer" : "Add Beer's information"} </h1>
+                <h1>{props.isEditing ? "Edit Product" : "Add Product's information"} </h1>
                 <form onSubmit={handleSubmit} className="col-lg-3 center-block">
                     <div className="form-group mb-3">
                         <label
@@ -95,33 +95,29 @@ function FormBeer(props) {
                             name="name"
                             value={formData.name}
                             onChange={handleValueChange}
-                            placeholder="Enter Beer's Name..."
+                            placeholder="Enter Product's Name..."
                         />
                     </div>
 
                     <div className="form-group mb-3">
                         <label
-                            htmlFor="content"
+                            htmlFor="description"
                         >
-                            Alcohol Content
+                            Description
                         </label>
-                        <input
+                        <textarea
                             type="number"
                             className="form-control"
-                            id="content"
-                            name="content"
+                            id="description"
+                            name="description"
                             onChange={handleValueChange}
-                            placeholder="Alcohol Content"
-                            min="0"
-                            max="100"
-                            step="0.01"
-                            value={formData.content}
-                        // defaultValue={formData.content}
-                        />
+                            placeholder="Description"
+                            value={formData.description}
+                        ></textarea>
                     </div>
                     <div className="form-group mb-3">
                         <label
-                            htmlFor="content"
+                            htmlFor="price"
                         >
                             Price <span>($)</span>
                         </label>
@@ -141,32 +137,32 @@ function FormBeer(props) {
                     </div>
                     <div className="form-group mb-3">
                         <label
-                            htmlFor="breweryId"
+                            htmlFor="companyId"
                         >
                             Company name
                         </label>
 
                         {/* <SelectTag
 
-                            id={'breweryId'}
-                            name={'breweryId'}
-                            label={'Select Brewery'}
-                            value={formData.breweryId ? formData.breweryId : 0}
+                            id={'companyId'}
+                            name={'companyId'}
+                            label={'Select Company'}
+                            value={formData.companyId ? formData.companyId : 0}
                             defaultValue={"Choose the Company"}
-                            list={breweries}
+                            list={companies}
                             onChange={handleValueChange}
                             required={true}
 
                         /> */}
                         <select
-                            value={formData.breweryId ? formData.breweryId : 0}
-                            name="breweryId"
-                            id="breweryId"
+                            value={formData.companyId ? formData.companyId : 0}
+                            name="companyId"
+                            id="companyId"
                             className="form-select"
-                            aria-label="Select Brewery"
+                            aria-label="Select Company"
                             onChange={handleValueChange}
                         >
-                            <option value="">Choose Brewery</option>
+                            <option value="">Choose Company</option>
                             {optionsElement}
                         </select>
                     </div>
@@ -176,7 +172,7 @@ function FormBeer(props) {
                             type="submit"
                             className="btn btn-primary "
                         >
-                            {props.isEditing ? "Edit Beer" : "Add Beer"}
+                            {props.isEditing ? "Edit Product" : "Add Product"}
 
                         </button>
 
@@ -194,4 +190,4 @@ function FormBeer(props) {
     )
 }
 
-export default FormBeer
+export default FormProduct

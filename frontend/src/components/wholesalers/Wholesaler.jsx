@@ -12,13 +12,13 @@ function Wholesaler(props) {
             <tr key={stock.id}>
                 <th scope="row">&nbsp;</th>
                 <td>{stock.id}</td>
-                <th scope="row">{stock.beer.name}</th>
+                <th scope="row">{stock.product.name}</th>
                 <td>{stock.quantity}</td>
                 <td>
                     <button
                         className="btn btn-warning"
                         onClick={() => {
-                            navigate(`/stocks/${stock.id}/edit/`, { state: { beerName: stock.beer.name, wholesalerName: props.wholesaler.name, isEditing: true } })
+                            navigate(`/stocks/${stock.id}/edit/`, { state: { productName: stock.product.name, wholesalerName: props.wholesaler.name, isEditing: true } })
                         }}>Edit</button>
                 </td>
             </tr>
