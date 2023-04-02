@@ -1,5 +1,12 @@
 import ServiceProvider from "../providers/ServiceProvider";
 
+/**
+ * A class representing a company service that interacts
+ * with an API to perform CRUD operations on companies
+ * and their products.
+ * (master branch)
+ * @class
+ */
 class CompanyService {
   constructor() {
     this.service = new ServiceProvider();
