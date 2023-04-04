@@ -117,7 +117,6 @@ function FormStock(props) {
 
         const requestStock = async () => {
             try {
-                // console.log("handleSubmit", formData);
                 let response = null;
                 if (props.isEditing) {
                     response = await props.stockService.updateStock(props.id, formData);

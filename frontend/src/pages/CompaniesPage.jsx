@@ -14,7 +14,6 @@ function CompaniesPage() {
     const getCompanies = async () => {
         const data = await companyService.getBrewersWithProducts();
         //console.log("data: ", JSON.stringify(data));
-        //console.log("data: ", response);
         setCompanies(data);
     };
     useEffect(() => {
