@@ -22,7 +22,6 @@ function FormProduct(props) {
         const companiesFindAll = async () => {
             const data = await new CompanyService().getAllCompanies();
             //console.log("data: ", JSON.stringify(data));
-            //console.log("data: ", response);
             setCompanies(data);
         };
 
@@ -35,7 +34,6 @@ function FormProduct(props) {
             const getProduct = async () => {
                 const data = await props.productService.getProduct(props.productId);
                 console.log("data: ", JSON.stringify(data));
-                //console.log("data: ", response);
                 setFormData(data);
             }
 
@@ -74,8 +72,6 @@ function FormProduct(props) {
 
         requestProduct();
     }
-    //console.log("formData: ", formData);
-
 
     return (
         <div className="container mt-3">
