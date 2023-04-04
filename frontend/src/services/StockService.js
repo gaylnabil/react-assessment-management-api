@@ -1,9 +1,22 @@
 import ServiceProvider from "../providers/ServiceProvider";
 
+/**
+ * A class representing a stock service that interacts with an API to perform CRUD operations on stocks.
+ */
 class StockService {
+  /**
+   * Creates an instance of StockService.
+   **/
   constructor() {
     this.service = new ServiceProvider();
   }
+
+  /**
+   * Retrieves a single stock by ID from the API.
+   *
+   * @param {number} id - The ID of the stock to retrieve.
+   * @returns {Promise<object>} - A promise that resolves with the retrieved stock object or rejects with an error message if unsuccessful.
+   **/
 
   async getStock(id) {
     return await this.service.get("stocks", id);
