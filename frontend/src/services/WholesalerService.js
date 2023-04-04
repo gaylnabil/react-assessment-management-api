@@ -1,5 +1,9 @@
 import ServiceProvider from "../providers/ServiceProvider";
 
+/**
+ * A class representing a service for interacting with wholesalers.
+ * @class
+ **/
 class WholesalerService {
   constructor() {
     this.service = new ServiceProvider();
