@@ -1,5 +1,10 @@
 import ServiceProvider from "../providers/ServiceProvider";
 
+/**
+ * A class representing a product service that interacts with
+ * an API to perform CRUD operations on products.
+ * @class
+ */
 class ProductService {
   constructor() {
     this.service = new ServiceProvider();
