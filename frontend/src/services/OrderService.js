@@ -1,6 +1,15 @@
 import ServiceProvider from "../providers/ServiceProvider";
 import WholesalerService from "./WholesalerService";
 import StockService from "./StockService";
+
+/**
+ * A service for managing orders and related data.
+ *
+ * This class provides methods for performing CRUD operations on orders,
+ * retrieving orders with associated wholesalers and products, getting
+ * information about a wholesaler's products, and checking stock levels
+ * by wholesaler and product ID.
+ **/
 class OrderService {
   constructor() {
     this.service = new ServiceProvider();
