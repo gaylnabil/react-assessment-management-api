@@ -12,9 +12,6 @@ function WholesalersCreatePage() {
   const { id } = useParams();
   const { state } = useLocation();
 
-  // console.log("🚀 ~ file: WholesalersCreatePage.jsx:27 ~ WholesalersCreatePage ~ product:", product);
-  // console.log("🚀 ~ file: WholesalersCreatePage.jsx:28 ~ WholesalersCreatePage ~ Id:", id);
-
   return (
     <div>
       <h1>{id}</h1>
