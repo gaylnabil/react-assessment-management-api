@@ -7,8 +7,9 @@ import WholesalersCreatePage from '../pages/WholesalersCreatePage';
 import StocksPage from '../pages/StocksPage';
 import OrdersPage from '../pages/OrdersPage';
 import OrderCreatePage from '../pages/OrderCreatePage';
-// import FormProduct from '../components/Products/FormProduct';
-function Routers() {
+
+
+const Routers = () => {
     return (
         <Routes>
 
