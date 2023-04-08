@@ -8,17 +8,6 @@ function FormCompany() {
         name: "",
     });
 
-    // const handleValueChange = (event) => {
-    //     setFormData(prevData => {
-    //         // const {name, type, value, checked} = event.target;
-    //         const { name, value } = event.target;
-    //         console.log([ name ], ":", value);
-    //         return {
-    //             ...prevData,
-    //             [ name ]: value
-    //         }
-    //     });
-    // }
     const handleValueChange = (event) => onValueChange(event, setFormData);
 
 
