@@ -1,4 +1,4 @@
-# Getting Started with PRoject assessment Management
+# Getting Started with Project assessment Management
 
 ## Database:
 
