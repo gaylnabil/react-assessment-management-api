@@ -6,7 +6,11 @@ import './App.css';
 import Navbar from './components/Navbar';
 import { BrowserRouter } from 'react-router-dom';
 import Routers from './routes/Routers';
-
+/**
+ * This function returns a JSX element that renders the main App component.
+ * @returns {JSX.Element} The rendered App component with BrowserRouter, 
+ * Navbar and Routers components.
+ */
 function App() {
   return (
     <BrowserRouter>
