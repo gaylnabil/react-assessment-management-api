@@ -11,8 +11,6 @@ function ProductsCreatePage() {
   useEffect(() => {
     setIsEditing(id !== undefined);
   }, [ id, isEditing ])
-  // console.log("🚀 ~ file: ProductsCreatePage.jsx:27 ~ ProductsCreatePage ~ product:", product);
-  // console.log("🚀 ~ file: ProductsCreatePage.jsx:28 ~ ProductsCreatePage ~ Id:", id);
 
   return (
     <div>
