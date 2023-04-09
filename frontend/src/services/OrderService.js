@@ -15,22 +15,27 @@ class OrderService {
     this.service = new ServiceProvider();
   }
 
+  // url: GET api/orders/:id
   async getOrder(id) {
     return await this.service.get("orders", id);
   }
 
+  // url: GET api/orders
   async getAllOrders() {
     return await this.service.getAll("orders");
   }
 
+  // url: POST api/orders
   async addOrder(data) {
     return await this.service.post("orders", data);
   }
 
+  // url: PUT api/orders/:id
   async updateOrder(id, data) {
     return await this.service.update("orders", id, data);
   }
 
+  // url: DELETE api/orders/:id
   async deleteOrder(id) {
     return await this.service.delete("orders", id);
   }
